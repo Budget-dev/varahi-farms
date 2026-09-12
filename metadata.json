@@ -1,0 +1,6 @@
+{
+  "name": "Vivaan Farms",
+  "description": "Pure A2 Gir Cow Bilona Ghee & Organic Goods from Gujarat",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

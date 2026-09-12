@@ -1,0 +1,79 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account details and loyalty points.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phoneNumber": { "type": "string" },
+        "purityCoins": { "type": "number", "description": "Current loyalty balance." }
+      },
+      "required": ["id", "email", "purityCoins"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Farm inventory item.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "basePrice": { "type": "number" },
+        "categoryId": { "type": "string" },
+        "isLive": { "type": "boolean" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "productCoupon": { "type": "string", "description": "Optional code for this product only." },
+        "rewardCoins": { "type": "number", "description": "Coins earned on purchase." }
+      }
+    },
+    "UniversalCoupon": {
+      "title": "UniversalCoupon",
+      "description": "Global discount codes.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["flat", "percentage"] },
+        "value": { "type": "number" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "usageLimit": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "type", "value", "isActive"]
+    }
+  },
+  "auth": {
+    "providers": ["password", "google"]
+  },
+  "firestore": {
+    "/userProfiles/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Customer profiles."
+    },
+    "/categories/{categoryId}": {
+      "schema": "object",
+      "description": "Product categories."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Farm inventory."
+    },
+    "/universalCoupons/{couponId}": {
+      "schema": { "$ref": "#/entities/UniversalCoupon" },
+      "description": "Global store coupons."
+    },
+    "/orders/{orderId}": {
+      "schema": "object",
+      "description": "Customer transactions."
+    },
+    "/adminRoles/{uid}": {
+      "schema": "object",
+      "description": "Admin privilege registry."
+    }
+  }
+}

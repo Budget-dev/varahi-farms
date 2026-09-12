@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-banner-1",
+      "description": "Vivaan Farms Premium Main Banner 1",
+      "imageUrl": "https://vivanfa.sirv.com/ChatGPT%20Image%20Sep%208%2C%202026%2C%2008_07_53%20AM.png",
+      "imageHint": "premium farm"
+    },
+    {
+      "id": "hero-banner-2",
+      "description": "Vivaan Farms Premium Main Banner 2",
+      "imageUrl": "https://vivanfa.sirv.com/ChatGPT%20Image%20Sep%208%2C%202026%2C%2008_07_57%20AM.png",
+      "imageHint": "natural products"
+    },
+    {
+      "id": "hero-banner-3",
+      "description": "Vivaan Farms Premium Main Banner 3",
+      "imageUrl": "https://vivanfa.sirv.com/ChatGPT%20Image%20Sep%208%2C%202026%2C%2008_08_08%20AM.png",
+      "imageHint": "pure A2 products"
+    }
+  ]
+}

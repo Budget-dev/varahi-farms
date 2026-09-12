@@ -1,0 +1,96 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isMasterAdmin() {
+      // Universal override for the master admin email
+      return isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- Universal Master Access ---
+    // Grants absolute power to the master admin across ALL collections
+    match /{document=**} {
+      allow read, write: if isMasterAdmin();
+    }
+
+    // --- Public Collection Rules ---
+    // Ensure the storefront loads for all visitors
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+    }
+
+    match /universalCoupons/{couponId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+      
+      match /variants/{variantId} {
+        allow read: if true;
+        allow write: if isMasterAdmin();
+      }
+    }
+
+    match /reviews/{reviewId} {
+      // Public can read reviews
+      allow read: if true;
+      
+      // Customers can submit reviews; newly submitted reviews MUST enter as 'pending'
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid 
+                    && request.resource.data.status == 'pending';
+      
+      // Update rules:
+      // 1. Review author editing their review (resets status to 'pending')
+      // 2. Users voting helpful on approved reviews
+      // 3. Admin moderating or editing
+      allow update: if isMasterAdmin() ||
+                    (
+                      isOwner(resource.data.userId) 
+                      && request.resource.data.userId == request.auth.uid 
+                      && request.resource.data.status == 'pending'
+                    ) ||
+                    (
+                      isSignedIn() 
+                      && resource.data.status == 'approved' 
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpfulCount', 'helpfulUsers'])
+                    );
+                    
+      allow delete: if isOwner(resource.data.userId) || isMasterAdmin();
+    }
+
+    // --- User and Order Rules ---
+
+    match /userProfiles/{userId} {
+      allow get, write: if isOwner(userId) || isMasterAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow create: if isSignedIn();
+      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || isMasterAdmin());
+      allow list: if isMasterAdmin() || (isSignedIn() && (request.query.limit == null || request.query.limit <= 100));
+      allow update, delete: if isMasterAdmin();
+    }
+
+    match /adminRoles/{uid} {
+      allow get: if isSignedIn();
+      allow write: if isMasterAdmin();
+    }
+  }
+}
