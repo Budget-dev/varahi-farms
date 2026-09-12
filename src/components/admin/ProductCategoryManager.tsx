@@ -245,6 +245,23 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       return;
     }
 
+    let finalImageUrls = [...uploadedImages];
+    if (newImageUrl.trim()) {
+      try {
+        const parsed = new URL(newImageUrl.trim());
+        if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && !newImageUrl.trim().startsWith('data:')) {
+          finalImageUrls.push(newImageUrl.trim());
+        }
+      } catch (e) {
+        // Ignore parsing errors here, handled by the length check below
+      }
+    }
+
+    if (finalImageUrls.length === 0) {
+      toast({ variant: "destructive", title: "Missing Image", description: "Please provide a product image URL." });
+      return;
+    }
+
     // Ensure variants exist
     let finalVars = variants;
     if (!finalVars || finalVars.length === 0) {
@@ -274,7 +291,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       statusBadge: statusBadge.trim() || "",
       badges: topBadge ? [topBadge.trim()] : [],
       categoryId: catId,
-      imageUrls: uploadedImages.length > 0 ? uploadedImages : ['https://picsum.photos/seed/vivaan/600/600'],
+      imageUrls: finalImageUrls,
       isLive: true, 
       updatedAt: new Date().toISOString(),
       volumeUnit: volumeUnit === 'custom' ? (customUnitName || 'custom') : volumeUnit,
@@ -304,6 +321,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
     console.log("Firebase runtime project:", app.options.projectId);
     console.log("Writing product to:", "products");
+    console.log("FINAL IMAGE URLS BEING SAVED:", productData.imageUrls);
 
     try {
       if (editingId) {
