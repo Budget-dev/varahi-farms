@@ -11,7 +11,7 @@ service cloud.firestore {
 
     function isMasterAdmin() {
       // Universal override for the master admin email
-      return isSignedIn() && request.auth.token.email != null && request.auth.token.email.toLowerCase() == 'vivanfarmsnatural@gmail.com';
+      return isSignedIn() && request.auth.token.email != null && request.auth.token.email.lower() == 'vivanfarmsnatural@gmail.com';
     }
 
     function isOwner(userId) {

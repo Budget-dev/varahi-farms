@@ -18,9 +18,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc } from 'firebase/firestore';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { useCollection, useFirestore, useMemoFirebase, useAuth, useFirebaseApp } from '@/firebase';
+import { collection, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star, Ticket, Coins, Plus, Check, Layers, Scale, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ProductVariant } from '@/types';
@@ -41,8 +40,10 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   icon
 }) => {
   const db = useFirestore();
+  const auth = useAuth();
+  const app = useFirebaseApp();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newImageUrl, setNewImageUrl] = useState('');
   
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: allProducts, isLoading } = useCollection(productsRef);
@@ -50,6 +51,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [searchTerm, setSearchValue] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Default Unit depending on category
   const getDefaultUnit = (): VolumeUnit => {
@@ -99,26 +101,31 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     });
   }, [allProducts, category, searchTerm]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      Array.from(files).forEach(file => {
-        if (file.size > 5 * 1024 * 1024) {
-          toast({ variant: "destructive", title: "Image too large", description: "Please use images under 5MB." });
-          return;
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setUploadedImages(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+  const handleAddImageUrl = () => {
+    const url = newImageUrl.trim();
+    if (!url) return;
+    
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        throw new Error();
+      }
+      if (url.startsWith('data:')) {
+        toast({ variant: "destructive", title: "Invalid URL", description: "Base64 data URLs are not allowed." });
+        return;
+      }
+    } catch {
+      toast({ variant: "destructive", title: "Invalid URL", description: "Please enter a valid HTTP/HTTPS image URL." });
+      return;
     }
+    
+    setUploadedImages(prev => [...prev, url]);
+    setNewImageUrl('');
   };
 
   const resetForm = () => {
     setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
-    setProductCoupon(''); setRewardCoins(''); setEditingId(null); setRating('4.9'); setReviews('120');
+    setNewImageUrl(''); setProductCoupon(''); setRewardCoins(''); setEditingId(null); setRating('4.9'); setReviews('120');
     setSoldLabel('1.5k+'); setStatusBadge('Selling Fast'); setTopBadge('New Launch');
     const defaultUnit = getDefaultUnit();
     setVolumeUnit(defaultUnit);
@@ -232,7 +239,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     setIsAddOpen(true);
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!name.trim()) {
       toast({ variant: "destructive", title: "Missing Info", description: "Product name is required." });
       return;
@@ -278,22 +285,64 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       rewardCoins: Number(rewardCoins) || 0
     };
 
-    if (editingId) {
-      setDocumentNonBlocking(doc(db, 'products', editingId), productData, { merge: true });
-      toast({ title: "Updated", description: `${name} has been updated with ${finalVars.length} size options.` });
-    } else {
-      addDocumentNonBlocking(collection(db, 'products'), { ...productData, createdAt: new Date().toISOString() });
-      toast({ title: "Product Published", description: `${name} is live with ${finalVars.length} size options.` });
-    }
+    setIsSaving(true);
     
-    setIsAddOpen(false);
-    resetForm();
+    console.log("=== FIREBASE AUTH DEBUG ===");
+    console.log("Current user exists:", !!auth.currentUser);
+    console.log("Current user email:", auth.currentUser?.email);
+    console.log("Current user email verified:", auth.currentUser?.emailVerified);
+    console.log("Current user UID:", auth.currentUser?.uid);
+    console.log("===========================");
+
+    if (!auth.currentUser) {
+      console.error("No Firebase authenticated user.");
+    } else {
+      await auth.currentUser.getIdToken(true);
+      const tokenResult = await auth.currentUser.getIdTokenResult();
+      console.log("Firebase token email:", tokenResult.claims.email);
+    }
+
+    console.log("Firebase runtime project:", app.options.projectId);
+    console.log("Writing product to:", "products");
+
+    try {
+      if (editingId) {
+        await setDoc(doc(db, 'products', editingId), productData, { merge: true });
+        console.log("Product updated:", editingId);
+        toast({ title: "Updated", description: `${name} has been updated with ${finalVars.length} size options.` });
+      } else {
+        const docRef = await addDoc(collection(db, 'products'), { ...productData, createdAt: new Date().toISOString() });
+        console.log("Product created:", docRef.id);
+        toast({ title: "Product Published", description: `${name} is live with ${finalVars.length} size options.` });
+      }
+      
+      setIsAddOpen(false);
+      resetForm();
+    } catch (error: any) {
+      console.error("PRODUCT CREATION FAILED:", error);
+      toast({ 
+        variant: "destructive", 
+        title: "Database Error", 
+        description: error.message || "Failed to persist product to database. Are you a verified admin?"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to remove this product?')) {
-      deleteDocumentNonBlocking(doc(db, 'products', id));
-      toast({ title: "Removed", description: "Item has been deleted from inventory." });
+      try {
+        await deleteDoc(doc(db, 'products', id));
+        toast({ title: "Removed", description: "Item has been deleted from inventory." });
+      } catch (error: any) {
+        console.error("PRODUCT DELETION FAILED:", error);
+        toast({ 
+          variant: "destructive", 
+          title: "Delete Failed", 
+          description: error.message || "Failed to delete product."
+        });
+      }
     }
   };
 
@@ -566,11 +615,22 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                           <button onClick={() => removeImage(idx)} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"><X className="w-3 h-3" /></button>
                         </div>
                       ))}
-                      <button onClick={() => fileInputRef.current?.click()} className="w-20 h-20 rounded-xl border-2 border-dashed border-[#DDD0B5] flex flex-col items-center justify-center gap-1 text-[#7A6848] hover:border-primary hover:text-primary transition-all bg-[#F9F6EF]">
-                        <Camera className="w-5 h-5" />
-                        <span className="text-[7px] font-black uppercase tracking-widest">Upload</span>
-                      </button>
-                      <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <Input 
+                        placeholder="Paste image URL (https://...)" 
+                        value={newImageUrl} 
+                        onChange={(e) => setNewImageUrl(e.target.value)}
+                        className="h-10 text-xs bg-[#F9F6EF] border-transparent font-medium"
+                      />
+                      <Button 
+                        type="button" 
+                        onClick={handleAddImageUrl} 
+                        variant="outline" 
+                        className="h-10 text-xs border-[#DDD0B5] text-[#7A6848] font-bold"
+                      >
+                        Add URL
+                      </Button>
                     </div>
                   </div>
 
@@ -621,8 +681,10 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
               </div>
 
               <div className="flex gap-4 mt-8">
-                <Button variant="outline" onClick={() => { setIsAddOpen(false); resetForm(); }} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
-                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">{editingId ? 'Update' : 'Publish'} Listing</Button>
+                <Button variant="outline" onClick={() => { setIsAddOpen(false); resetForm(); }} disabled={isSaving} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
+                <Button onClick={handleAdd} disabled={isSaving} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">
+                  {isSaving ? 'Saving...' : (editingId ? 'Update Listing' : 'Publish Listing')}
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
