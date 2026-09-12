@@ -103,8 +103,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
-        if (file.size > 500000) {
-          toast({ variant: "destructive", title: "Image too large", description: "Please use images under 500KB." });
+        if (file.size > 5 * 1024 * 1024) {
+          toast({ variant: "destructive", title: "Image too large", description: "Please use images under 5MB." });
           return;
         }
         const reader = new FileReader();
