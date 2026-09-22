@@ -1,5 +1,14 @@
-# Firebase Studio
+# Varahi Farms
 
-This is a NextJS starter in Firebase Studio.
+Modern Next.js web application for Varahi Farms.
 
-To get started, take a look at src/app/page.tsx.
+## Getting Started
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
