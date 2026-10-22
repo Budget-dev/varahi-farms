@@ -16,6 +16,16 @@ export const CATEGORY_ICONS_DATA = [
     image: '/images/categories/ghee.png',
   },
   {
+    id: 'sweets',
+    label: 'Sweets',
+    image: '/images/products/sweets.jpg',
+  },
+  {
+    id: 'honey',
+    label: 'Honey',
+    image: '/images/products/honey_jar.jpg',
+  },
+  {
     id: 'oils',
     label: 'Oil',
     image: '/images/categories/oils.png',
@@ -29,11 +39,6 @@ export const CATEGORY_ICONS_DATA = [
     id: 'superfoods',
     label: 'Superfoods',
     image: '/images/categories/superfoods.png',
-  },
-  {
-    id: 'gift-card',
-    label: 'Gift Card',
-    image: '/images/categories/gift-card.png',
   },
   {
     id: 'combos',

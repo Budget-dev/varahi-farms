@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Star, ShoppingCart, Heart, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { Star, ShoppingCart, Heart, ChevronLeft, ChevronRight, Check, ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
 import { PantryCategoryIcons } from './PantryCategoryIcons';
@@ -18,8 +18,9 @@ interface CleanestPantrySectionProps {
 const PANTRY_CATEGORIES = [
   { id: 'all', label: 'All', icon: '✨' },
   { id: 'ghee', label: 'A2 Ghee', icon: '🐄' },
-  { id: 'oils', label: 'Wood Pressed Oils', icon: '🫒' },
+  { id: 'sweets', label: 'Sweets', icon: '🍬' },
   { id: 'honey', label: 'Raw Honey', icon: '🍯' },
+  { id: 'oils', label: 'Wood Pressed Oils', icon: '🫒' },
   { id: 'staples', label: 'Stone Ground Staples', icon: '🌾' },
   { id: 'combos', label: 'Healthy Combos', icon: '🎁' },
 ];
@@ -84,14 +85,14 @@ export const CleanestPantrySection: React.FC<CleanestPantrySectionProps> = ({
     if (selectedCat === 'all') return true;
     if (selectedCat === 'oils') return p.cat === 'oils' || p.name.toLowerCase().includes('oil');
     if (selectedCat === 'ghee') return p.cat === 'ghee' || p.name.toLowerCase().includes('ghee');
-    if (selectedCat === 'honey' || selectedCat === 'superfoods') {
-      return p.cat === 'honey' || p.cat === 'staples' || p.name.toLowerCase().includes('honey') || p.name.toLowerCase().includes('sugar') || p.name.toLowerCase().includes('jaggery');
-    }
-    if (selectedCat === 'atta') {
-      return p.cat === 'staples' || p.name.toLowerCase().includes('atta') || p.name.toLowerCase().includes('flour') || p.name.toLowerCase().includes('sugar') || p.name.toLowerCase().includes('jaggery');
+    if (selectedCat === 'sweets') return p.cat === 'sweets' || p.name.toLowerCase().includes('sweet') || p.name.toLowerCase().includes('ladoo') || p.name.toLowerCase().includes('peda');
+    if (selectedCat === 'honey') return p.cat === 'honey' || p.name.toLowerCase().includes('honey');
+    if (selectedCat === 'superfoods') return p.cat === 'superfoods' || p.name.toLowerCase().includes('chyawanprash') || p.name.toLowerCase().includes('butter') || p.name.toLowerCase().includes('makkhan');
+    if (selectedCat === 'atta' || selectedCat === 'staples') {
+      return p.cat === 'staples' || p.name.toLowerCase().includes('atta') || p.name.toLowerCase().includes('flour') || p.name.toLowerCase().includes('sugar') || p.name.toLowerCase().includes('jaggery') || p.name.toLowerCase().includes('wheat');
     }
     if (selectedCat === 'combos' || selectedCat === 'gift-card') {
-      return p.cat === 'combo' || p.name.toLowerCase().includes('combo') || p.name.toLowerCase().includes('pack') || p.name.toLowerCase().includes('hamper');
+      return p.cat === 'combo' || p.cat === 'combos' || p.name.toLowerCase().includes('combo') || p.name.toLowerCase().includes('pack') || p.name.toLowerCase().includes('hamper') || p.name.toLowerCase().includes('trio');
     }
     return p.cat === selectedCat;
   });
@@ -100,15 +101,28 @@ export const CleanestPantrySection: React.FC<CleanestPantrySectionProps> = ({
     <section id="cleanest-pantry" className="py-6 sm:py-10 md:py-16 bg-[#FFFFFF] border-b border-[#EAE3D2] relative select-none">
       <div className="max-w-[1440px] mx-auto px-3 sm:px-8 lg:px-12">
         
-        {/* Section Heading */}
-        <div className="text-center mb-3 sm:mb-6 md:mb-8">
-          <p className="text-[10px] sm:text-sm font-black text-[#6B5A45] tracking-[2px] sm:tracking-[2.5px] uppercase mb-0.5 sm:mb-1">
-            Welcome to Vivaan
-          </p>
-          <h2 className="font-serif text-xl sm:text-3xl md:text-4xl font-extrabold text-[#0D3B2E] tracking-tight">
-            Your One-Stop Cleanest Pantry
-          </h2>
-          <div className="w-12 sm:w-16 h-0.5 bg-[#0D3B2E]/20 mx-auto mt-2 sm:mt-3 rounded-full" />
+        {/* Section Heading with See All button */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-6 md:mb-8">
+          <div className="text-center sm:text-left">
+            <p className="text-[10px] sm:text-sm font-black text-[#6B5A45] tracking-[2px] sm:tracking-[2.5px] uppercase mb-0.5 sm:mb-1">
+              Welcome to Vivaan
+            </p>
+            <h2 className="font-serif text-xl sm:text-3xl md:text-4xl font-extrabold text-[#0D3B2E] tracking-tight">
+              Your One-Stop Cleanest Pantry
+            </h2>
+            <div className="w-12 sm:w-16 h-0.5 bg-[#0D3B2E]/20 mt-1.5 rounded-full mx-auto sm:mx-0" />
+          </div>
+
+          {/* See All Button linking to Category Page */}
+          <button
+            type="button"
+            onClick={() => router.push(`/category/${selectedCat}`)}
+            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full border border-[#0D3B2E] text-[#0D3B2E] bg-white hover:bg-[#0D3B2E] hover:text-white transition-all text-xs sm:text-sm font-bold tracking-wide shadow-xs cursor-pointer group shrink-0 active:scale-95"
+            aria-label={`See all products in ${selectedCat}`}
+          >
+            <span>See All</span>
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
         {/* Authentic Circular Category Icons Row matching screenshot */}
@@ -281,6 +295,18 @@ export const CleanestPantrySection: React.FC<CleanestPantrySectionProps> = ({
               );
             })}
           </div>
+        </div>
+
+        {/* Bottom Explore Category Link */}
+        <div className="mt-5 sm:mt-8 text-center">
+          <button
+            type="button"
+            onClick={() => router.push(`/category/${selectedCat}`)}
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-serif font-black text-[#0D3B2E] hover:text-[#185338] hover:underline cursor-pointer group"
+          >
+            <span>Explore All Products in {selectedCat === 'all' ? 'Cleanest Pantry' : selectedCat.toUpperCase()}</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
       </div>
