@@ -228,21 +228,22 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
           </button>
         </div>
 
-        {/* Floating Quick Action Mini-Bar below gallery (Exact match to reference_mobile.png) */}
-        <div className="mt-3 bg-white border border-[#E9DFCF] rounded-xl px-4 py-2 flex items-center justify-between shadow-xs">
-          <div>
-            <span className="text-xs text-gray-500 font-medium">Starting from</span>
-            <div className="font-sans text-base font-extrabold text-[#111827]">
-              Rs. {price.toLocaleString('en-IN')}.00
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onAddToCart}
-            className="bg-[#0D3B2E] text-white font-extrabold text-xs uppercase tracking-wider px-6 py-2.5 rounded-lg hover:bg-[#072B21] active:scale-95 transition-all cursor-pointer shadow-sm"
+        {/* Quick link to 9:16 Instagram Reel below mobile gallery */}
+        <div className="mt-2.5">
+          <a
+            href="#product-reels"
+            className="w-full py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#FDF9F3] via-white to-[#FDF9F3] border border-[#E9DFCF] flex items-center justify-between text-xs font-bold text-[#100C06] hover:border-[#833AB4]/40 transition-all shadow-2xs group"
           >
-            ADD TO CART
-          </button>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center text-[9px] shadow-xs group-hover:scale-110 transition-transform">
+                ▶
+              </span>
+              <span className="font-extrabold text-[#111827] tracking-tight">Watch 9:16 Instagram Reel</span>
+            </div>
+            <span className="text-[10px] font-semibold text-[#833AB4] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+              Behind The Scenes →
+            </span>
+          </a>
         </div>
       </div>
 

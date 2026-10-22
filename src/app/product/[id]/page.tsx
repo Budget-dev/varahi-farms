@@ -25,6 +25,7 @@ import { ComparisonSection } from '@/components/product/ComparisonSection';
 import { FarmJourneySection } from '@/components/product/FarmJourneySection';
 import { ProductFaqSection } from '@/components/product/ProductFaqSection';
 import { StickyMobileBar } from '@/components/product/StickyMobileBar';
+import { ProductInstagramReelSection } from '@/components/product/ProductInstagramReelSection';
 import { cn } from '@/lib/utils';
 
 export const DEFAULT_BUFFALO_GHEE_PRODUCT: Product = {
@@ -246,7 +247,13 @@ export default function ProductDetailsPage() {
 
       </main>
 
-      {/* 4. SECTION: How Do You Know It’s Safe & Pure? */}
+      {/* 4. 9:16 INSTAGRAM REELS & BEHIND-THE-SCENES VIDEO */}
+      <ProductInstagramReelSection 
+        product={product} 
+        onAddToCart={handleAddToCart} 
+      />
+
+      {/* 5. SECTION: How Do You Know It’s Safe & Pure? */}
       <PurityGuaranteeSection />
 
       {/* 5. SECTION: What Makes Us Different? */}
