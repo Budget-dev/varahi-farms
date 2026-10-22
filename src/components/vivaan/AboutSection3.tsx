@@ -58,7 +58,7 @@ export function AboutSection3() {
       <div className="max-w-6xl mx-auto">
         <div className="relative">
           {/* Header with badge & social icons */}
-          <div className="flex justify-between items-center mb-8 w-[88%] absolute lg:top-4 md:top-2 sm:top-0 -top-2 z-10">
+          <div className="flex justify-between items-center mb-4 sm:mb-8 w-full sm:w-[88%] sm:absolute lg:top-4 md:top-2 sm:top-0 z-10 px-1 sm:px-0">
             <div className="flex items-center gap-2 text-xl">
               <span className="text-amber-600 animate-spin">✱</span>
               <TimelineContent

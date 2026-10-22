@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase, useAuth, useFirebaseApp } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star, Ticket, Coins, Plus, Check, Layers, Scale, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -40,8 +40,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   icon
 }) => {
   const db = useFirestore();
-  const auth = useAuth();
-  const app = useFirebaseApp();
   const { toast } = useToast();
   const [newImageUrl, setNewImageUrl] = useState('');
   
@@ -268,14 +266,23 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       finalVars = [{ s: 'Standard', p: Number(price) || 0, mrp: Number(mrpPrice) || Number(price) || 0, on: true }];
     }
 
-    // Ensure one variant is marked as default
-    if (!finalVars.some(v => v.on)) {
-      finalVars[0].on = true;
-    }
+    // Ensure one variant is marked as default and store consistent numeric values.
+    finalVars = finalVars.map((variant, index) => ({
+      ...variant,
+      s: String(variant.s).trim(),
+      p: Number(variant.p) || 0,
+      mrp: Number(variant.mrp) || Number(variant.p) || 0,
+      on: Boolean(variant.on) || (!finalVars.some(v => v.on) && index === 0),
+    }));
 
     const defaultVar = finalVars.find(v => v.on) || finalVars[0];
     const finalBasePrice = Number(defaultVar.p) || Number(price) || 0;
     const finalMrpPrice = Number(defaultVar.mrp) || Number(mrpPrice) || finalBasePrice;
+
+    if (finalBasePrice <= 0) {
+      toast({ variant: "destructive", title: "Missing Price", description: "Add a selling price greater than ₹0 for the default variant." });
+      return;
+    }
 
     const catId = category.toLowerCase();
     
@@ -304,25 +311,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
     setIsSaving(true);
     
-    console.log("=== FIREBASE AUTH DEBUG ===");
-    console.log("Current user exists:", !!auth.currentUser);
-    console.log("Current user email:", auth.currentUser?.email);
-    console.log("Current user email verified:", auth.currentUser?.emailVerified);
-    console.log("Current user UID:", auth.currentUser?.uid);
-    console.log("===========================");
-
-    if (!auth.currentUser) {
-      console.error("No Firebase authenticated user.");
-    } else {
-      await auth.currentUser.getIdToken(true);
-      const tokenResult = await auth.currentUser.getIdTokenResult();
-      console.log("Firebase token email:", tokenResult.claims.email);
-    }
-
-    console.log("Firebase runtime project:", app.options.projectId);
-    console.log("Writing product to:", "products");
-    console.log("FINAL IMAGE URLS BEING SAVED:", productData.imageUrls);
-
     try {
       if (editingId) {
         await setDoc(doc(db, 'products', editingId), productData, { merge: true });

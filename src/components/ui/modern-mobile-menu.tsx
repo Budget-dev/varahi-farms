@@ -127,9 +127,9 @@ const InteractiveMenu: React.FC<InteractiveMenuProps> = ({
             style={{ '--lineWidth': '0px' } as React.CSSProperties}
           >
             <div className="menu__icon">
-              <IconComponent className="icon w-5 h-5" />
+              <IconComponent className="icon w-[18px] h-[18px]" />
               {item.badge !== undefined && item.badge > 0 && (
-                <div className="absolute -top-1 -right-1 min-w-[17px] h-[17px] bg-[#C83232] text-white rounded-full text-[9px] font-black flex items-center justify-center px-1 border-2 border-white shadow-sm">
+                <div className="absolute -top-1 -right-1 min-w-[15px] h-[15px] bg-[#C83232] text-white rounded-full text-[8px] font-black flex items-center justify-center px-0.5 border border-white shadow-xs">
                   {item.badge}
                 </div>
               )}

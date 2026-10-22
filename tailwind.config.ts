@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        // Measured from reference Dawn theme: tablet 750–989px
+        tablet: '750px',
+      },
       fontFamily: {
         body: ['var(--font-oswald)', 'Oswald', 'sans-serif'],
         sans: ['var(--font-oswald)', 'Oswald', 'sans-serif'],
@@ -16,6 +20,18 @@ export default {
         code: ['monospace'],
       },
       colors: {
+        // ── Vivaan Farms product-page design tokens (TEMPORARY placeholders) ──
+        // Replace hex values in globals.css when real palette is confirmed.
+        surface:        'var(--vf-surface)',        // card / section fill
+        warm:           'var(--vf-warm)',           // muted warm text
+        'border-warm':  'var(--vf-border)',         // warm border
+        'surface-alt':  'var(--vf-surface-alt)',    // price block / badge bg
+        'vf-card':      'var(--vf-card)',           // card background
+        'vf-border':    'var(--vf-border)',         // card/container border
+        'vf-banner-bg': 'var(--vf-banner-bg)',      // banner background
+        'vf-badge-bg':  'var(--vf-badge-bg)',       // promo badge background
+        'vf-badge-text':'var(--vf-badge-text)',     // promo badge text
+        // ── shadcn/ui semantic tokens ──
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

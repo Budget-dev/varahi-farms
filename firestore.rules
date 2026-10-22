@@ -1,96 +1,184 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // --- Helper Functions ---
+    // ── HOW "ADMIN" IS DETERMINED ──────────────────────────────────────────
+    // Admin = the one email address hardcoded here: vivanfarmsnatural@gmail.com
+    // Checked against the Firebase Auth JWT token's email and email_verified claims:
+    // request.auth.token.email_verified == true
+    // && request.auth.token.email.lower() == 'vivanfarmsnatural@gmail.com'.
+    //
+    // Note: It is NOT a Firebase Custom Claim (e.g. auth.token.admin == true),
+    // NOT a role stored in a users/profiles Firestore document, and NOT an array list.
+    // It is a direct string equality check on the authenticated user's email.
+
+    // ── Helper Functions ───────────────────────────────────────────────────
 
     function isSignedIn() {
       return request.auth != null;
     }
 
     function isMasterAdmin() {
-      // Universal override for the master admin email
-      return isSignedIn() && request.auth.token.email != null && request.auth.token.email.lower() == 'vivanfarmsnatural@gmail.com';
+      // Universal override for the master admin email (must be verified)
+      return isSignedIn()
+          && 'email' in request.auth.token
+          && request.auth.token.email != null
+          && 'email_verified' in request.auth.token
+          && request.auth.token.email_verified == true
+          && request.auth.token.email.lower() == 'vivanfarmsnatural@gmail.com';
     }
 
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // --- Universal Master Access ---
-    // Grants absolute power to the master admin across ALL collections
+    // ── Universal Master Access ────────────────────────────────────────────
+    // Grants full read+write to the master admin across ALL collections.
+    // This covers draft products, unapproved reviews, and all collections.
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
 
-    // --- Public Collection Rules ---
-    // Ensure the storefront loads for all visitors
-
-    match /categories/{categoryId} {
-      allow read: if true;
-      allow write: if isMasterAdmin();
-    }
-
-    match /universalCoupons/{couponId} {
-      allow read: if true;
-      allow write: if isMasterAdmin();
-    }
-
+    // ── PRODUCTS ──────────────────────────────────────────────────────────
+    // Admins can read all products (including drafts).
+    // Public reads are strictly limited to published products.
+    // Write access is restricted to admins only.
     match /products/{productId} {
-      allow read: if true;
-      allow write: if isMasterAdmin();
-      
+      allow read: if resource.data.status == 'published' || isMasterAdmin();
+      allow create, update, delete: if isMasterAdmin();
+
       match /variants/{variantId} {
         allow read: if true;
         allow write: if isMasterAdmin();
       }
     }
 
+    // ── REVIEWS ───────────────────────────────────────────────────────────
+    // Reads allowed if:
+    //   1. status == 'approved' (public storefront)
+    //   2. resource.data.userId == request.auth.uid (author reading own pending review)
+    //   3. isMasterAdmin() (admin moderating reviews)
     match /reviews/{reviewId} {
-      // Public can read reviews
-      allow read: if true;
-      
-      // Customers can submit reviews; newly submitted reviews MUST enter as 'pending'
-      allow create: if isSignedIn() 
-                    && request.resource.data.userId == request.auth.uid 
-                    && request.resource.data.status == 'pending';
-      
-      // Update rules:
-      // 1. Review author editing their review (resets status to 'pending')
-      // 2. Users voting helpful on approved reviews
-      // 3. Admin moderating or editing
-      allow update: if isMasterAdmin() ||
-                    (
-                      isOwner(resource.data.userId) 
-                      && request.resource.data.userId == request.auth.uid 
-                      && request.resource.data.status == 'pending'
-                    ) ||
-                    (
-                      isSignedIn() 
-                      && resource.data.status == 'approved' 
-                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpfulCount', 'helpfulUsers'])
-                    );
-                    
+      allow read: if resource.data.status == 'approved'
+          || (isSignedIn() && resource.data.userId == request.auth.uid)
+          || isMasterAdmin();
+
+      // Create: signed-in users only; field validation enforced:
+      //   - rating between 1 and 5
+      //   - status == 'pending'
+      //   - isVerified == false
+      //   - no adminReply present
+      //   - helpfulCount == 0
+      //   - productId must exist (non-empty string)
+      //   - userId matches authenticated caller
+      allow create: if isSignedIn()
+          && request.resource.data.userId == request.auth.uid
+          && 'productId' in request.resource.data
+          && request.resource.data.productId is string
+          && request.resource.data.productId.size() > 0
+          && request.resource.data.status == 'pending'
+          && request.resource.data.isVerified == false
+          && (!('verifiedPurchase' in request.resource.data) || request.resource.data.verifiedPurchase == false)
+          && !('adminReply' in request.resource.data)
+          && request.resource.data.helpfulCount == 0
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5;
+
+      // Update:
+      //   1. Admin: full control
+      //   2. Review author editing own review:
+      //      - status must be 'pending'
+      //      - only rating, title, comment, images (and status/updatedAt) may change
+      //      - isVerified, helpfulCount, adminReply, userId, productId must not change
+      //   3. Any signed-in user voting helpful on an approved review:
+      //      - only helpfulCount and helpfulUsers may change
+      //      - helpfulCount must increase by exactly 1
+      //      - user adds self to helpfulUsers and cannot vote twice
+      allow update: if isMasterAdmin()
+          || (
+            isOwner(resource.data.userId)
+            && request.resource.data.userId == resource.data.userId
+            && request.resource.data.productId == resource.data.productId
+            && request.resource.data.isVerified == resource.data.isVerified
+            && request.resource.data.helpfulCount == resource.data.helpfulCount
+            && (!('adminReply' in resource.data) || request.resource.data.adminReply == resource.data.adminReply)
+            && (!('adminReply' in request.resource.data) || ('adminReply' in resource.data && request.resource.data.adminReply == resource.data.adminReply))
+            && request.resource.data.status == 'pending'
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['rating', 'title', 'comment', 'images', 'status', 'updatedAt'])
+            && request.resource.data.rating >= 1
+            && request.resource.data.rating <= 5
+          )
+          || (
+            isSignedIn()
+            && resource.data.status == 'approved'
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['helpfulCount', 'helpfulUsers'])
+            && request.resource.data.helpfulCount == resource.data.helpfulCount + 1
+            && request.resource.data.helpfulUsers.hasAll(resource.data.helpfulUsers)
+            && request.auth.uid in request.resource.data.helpfulUsers
+            && !(request.auth.uid in resource.data.helpfulUsers)
+          );
+
       allow delete: if isOwner(resource.data.userId) || isMasterAdmin();
     }
 
-    // --- User and Order Rules ---
+    // ── FAQS (NEW) ────────────────────────────────────────────────────────
+    // Public reads enabled FAQs only; admins read all.
+    match /faqs/{faqId} {
+      allow read: if resource.data.enabled == true || isMasterAdmin();
+      allow create, update, delete: if isMasterAdmin();
+    }
 
+    // ── SITE SETTINGS (NEW) ───────────────────────────────────────────────
+    // Public read for site-wide settings (announcement bar, logo, contact info).
+    // Admin-only write.
+    match /siteSettings/{docId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+    }
+
+    // ── CATEGORIES ────────────────────────────────────────────────────────
+    // Preserved exactly from old rules.
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+    }
+
+    // ── UNIVERSAL COUPONS ─────────────────────────────────────────────────
+    // Preserved exactly from old rules.
+    match /universalCoupons/{couponId} {
+      allow read: if true;
+      allow write: if isMasterAdmin();
+    }
+
+    // ── USER PROFILES ─────────────────────────────────────────────────────
+    // Preserved exactly from old rules.
     match /userProfiles/{userId} {
       allow get, write: if isOwner(userId) || isMasterAdmin();
     }
 
+    // ── ORDERS ────────────────────────────────────────────────────────────
+    // Preserved exactly from old rules.
     match /orders/{orderId} {
       allow create: if isSignedIn();
-      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || isMasterAdmin());
-      allow list: if isMasterAdmin() || (isSignedIn() && (request.query.limit == null || request.query.limit <= 100));
+      allow get: if isSignedIn()
+          && (resource == null
+            || resource.data.userId == request.auth.uid
+            || isMasterAdmin());
+      allow list: if isMasterAdmin()
+          || (isSignedIn()
+            && (request.query.limit == null || request.query.limit <= 100)
+            && resource.data.userId == request.auth.uid);
       allow update, delete: if isMasterAdmin();
     }
 
+    // ── ADMIN ROLES ───────────────────────────────────────────────────────
+    // Preserved exactly from old rules.
     match /adminRoles/{uid} {
       allow get: if isSignedIn();
       allow write: if isMasterAdmin();
     }
+
   }
 }

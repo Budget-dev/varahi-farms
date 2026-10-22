@@ -13,6 +13,7 @@ export default function AdminProductsPage() {
     { id: 'ghee', label: 'A2 Ghee', desc: 'Traditional Bilona Ghee', icon: 'fa-cow', href: '/admin/products/ghee' },
     { id: 'sweets', label: 'Sweets', desc: 'Artisanal Farm Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
     { id: 'honey', label: 'Honey', desc: 'Wild Forest Organic Honey', icon: 'fa-jar', href: '/admin/products/honey' },
+    { id: 'pickles', label: 'Pickles', desc: 'Sun-dried traditional pickles', icon: 'fa-pepper-hot', href: '/admin/products/pickles' },
   ];
 
   return (

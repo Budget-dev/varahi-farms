@@ -1,5 +1,8 @@
 import { ReactNode } from 'react';
 
+// Re-export all v2 product types
+export * from './product';
+
 export type Category = 'all' | 'ghee' | 'sweets' | 'honey' | 'superfoods';
 
 export interface ProductVariant {

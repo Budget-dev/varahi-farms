@@ -40,7 +40,6 @@ import { ProductReview, ReviewStatus } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { LoginModal } from './LoginModal';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { ErrorCard } from '@/components/ui/ErrorCard';
 
 interface ProductReviewsSectionProps {
@@ -55,8 +54,8 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
   productId,
   productName,
   productImage,
-  fallbackRating = 4.9,
-  fallbackCount = 120,
+  fallbackRating = 0,
+  fallbackCount = 0,
 }) => {
   const db = useFirestore();
   const { user } = useUser();
@@ -203,6 +202,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         images: Array.isArray(r.images) ? r.images : (Array.isArray(r.imageUrls) ? r.imageUrls : []),
         status: (r.status as ReviewStatus) || 'pending',
         adminComment: r.adminComment || '',
+        isVerified: Boolean(r.isVerified),
         verifiedPurchase: Boolean(r.verifiedPurchase),
         helpfulCount: Number(r.helpfulCount) || 0,
         helpfulUsers: Array.isArray(r.helpfulUsers) ? r.helpfulUsers : [],
@@ -227,9 +227,9 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
     const totalCount = approvedReviews.length;
     if (totalCount === 0) {
       return {
-        avgRating: fallbackRating,
-        totalCount: fallbackCount,
-        distribution: { 5: 90, 4: 8, 3: 2, 2: 0, 1: 0 }
+        avgRating: 0,
+        totalCount: 0,
+        distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
       };
     }
 
@@ -338,7 +338,10 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         images: attachedImages,
         status: 'pending', // ALWAYS enters as pending for admin moderation!
         adminComment: '',
-        verifiedPurchase: true,
+        isVerified: false,
+        verifiedPurchase: false,
+        helpfulCount: 0,
+        helpfulUsers: [],
         createdAt: myReview?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -417,7 +420,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-2">Verified Customer Feedback</div>
-            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-primary">Customer Reviews</h2>
+            <h2 className="font-serif text-2xl sm:text-4xl font-extrabold text-[#E76F51]">Customer Reviews</h2>
           </div>
 
           <Button
@@ -653,7 +656,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-black text-primary">{rev.userName}</span>
-                            {rev.verifiedPurchase && (
+                            {rev.isVerified && (
                               <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50 font-bold text-[9px] px-2 py-0.2 rounded-full border border-emerald-200 flex items-center gap-1">
                                 <ShieldCheck className="w-2.5 h-2.5" /> Verified Buyer
                               </Badge>

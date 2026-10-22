@@ -95,46 +95,60 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
 
         <div className="flex-1 flex justify-center md:justify-start h-full items-center">
-          <Link href="/" className="flex items-center shrink-0 group relative">
-            {/* Desktop Logo */}
-            <div className="hidden md:block w-40 h-20 relative transition-transform duration-300 group-hover:scale-105">
-              <Image 
-                src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
-                alt="Vivaan Farms"
-                fill
-                className="object-contain object-left"
-                priority
-              />
-            </div>
-            
-            {/* Mobile Logo */}
-            <div className="md:hidden w-32 h-10 relative">
-              <Image 
-                src="/mobile-logo.png"
-                alt="vivaan farms"
-                fill
-                className="object-contain"
-                priority
-              />
+          <Link href="/" className="flex items-center shrink-0 group relative gap-2.5">
+            {/* Brand Logo */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0D3B2E] flex items-center justify-center text-white font-serif font-black shadow-xs shrink-0">
+                <svg viewBox="0 0 40 40" className="w-6 h-6 text-[#8CD790]" fill="currentColor">
+                  <path d="M20 5 C28 5 35 12 35 20 C35 28 28 35 20 35 C12 35 5 28 5 20 C5 12 12 5 20 5 Z M20 9 C14 9 9 14 9 20 C9 26 14 31 20 31 C26 31 31 26 31 20 C31 14 26 9 20 9 Z" fill="#F8D279" />
+                  <path d="M20 12 C23 15 25 18 24 22 C23 26 19 28 16 26 C13 24 13 20 16 17 C18 15 19 13 20 12 Z" fill="#0D3B2E" />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif font-black text-lg sm:text-xl text-[#0D3B2E] tracking-tight leading-none">
+                  VIVAAN
+                </span>
+                <span className="text-[7.5px] sm:text-[9px] font-black text-[#6B5A45] tracking-[2.5px] uppercase mt-0.5">
+                  ORGANIC FARMS
+                </span>
+              </div>
             </div>
           </Link>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-8 2xl:gap-14 mx-8">
-          {navItems.map((item) => (
-            <button 
-              key={item.label}
-              onClick={item.onClick}
-              className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase cursor-pointer"
-            >
-              {item.label}
-            </button>
-          ))}
-          <Link href="/about" className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase">
-            About Us
-          </Link>
-          <Link href="/contact" className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase">
-            Contact Us
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-8 mx-4">
+          <button 
+            onClick={() => onFilter('all')}
+            className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase cursor-pointer"
+          >
+            All Products
+          </button>
+          <button 
+            onClick={() => onFilter('oils')}
+            className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase cursor-pointer"
+          >
+            Wood Pressed Oils
+          </button>
+          <button 
+            onClick={() => onFilter('ghee')}
+            className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase cursor-pointer"
+          >
+            A2 Desi Ghee
+          </button>
+          <button 
+            onClick={() => onFilter('honey')}
+            className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase cursor-pointer"
+          >
+            Raw Honey
+          </button>
+          <button 
+            onClick={() => onFilter('combos')}
+            className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase cursor-pointer"
+          >
+            Healthy Combos
+          </button>
+          <Link href="/about" className="text-[12px] font-extrabold text-[#0D3B2E] hover:text-[#2D6A4F] transition-all tracking-wider uppercase">
+            Our Story
           </Link>
         </nav>
 

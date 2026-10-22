@@ -136,7 +136,7 @@ export const HoverFooter: React.FC = () => {
       
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes draw-vivaan {
           0% { transform: translateY(10%); opacity: 0; }
           100% { transform: translateY(0); opacity: 0.03; }

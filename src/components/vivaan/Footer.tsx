@@ -1,20 +1,18 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  Facebook, 
-  Instagram, 
-  Youtube, 
-  Send, 
-  ShieldCheck, 
-  MapPin, 
   Phone, 
   Mail, 
-  CheckCircle2,
-  MessageCircle,
-  ChevronRight
+  Clock, 
+  Instagram, 
+  Youtube, 
+  Facebook, 
+  CheckCircle2, 
+  ShieldCheck, 
+  Truck,
+  ArrowRight
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -31,362 +29,198 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative bg-primary text-white overflow-hidden border-t border-primary-dark/20">
+    <footer className="w-full bg-[#0D3B2E] text-white border-t border-[#09281F] select-none">
       
-      {/* ========================================================================= */}
-      {/* 1. MOBILE COMPACT FOOTER (< md) - Clean, Minimalist, Space-Saving         */}
-      {/* ========================================================================= */}
-      <div className="md:hidden px-4 pt-8 pb-[calc(env(safe-area-inset-bottom,0px)+84px)] space-y-6 relative z-10 text-left">
-        
-        {/* Brand & Social in a Single Compact Row */}
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center p-1 shrink-0 shadow-sm">
-              <Image 
-                src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png" 
-                alt="Vivaan Farms" 
-                width={30} 
-                height={30} 
-                className="object-contain" 
-              />
-            </div>
-            <div>
-              <div className="font-headline text-base font-black tracking-wider uppercase text-white leading-tight">
-                Vivaan Farms
-              </div>
-              <div className="text-[7.5px] font-extrabold text-secondary tracking-widest uppercase">
-                A2 Gir Cow Bilona Ghee
-              </div>
-            </div>
-          </div>
-
-          {/* Social Icons Inline */}
-          <div className="flex items-center gap-2">
-            <a 
-              href="https://facebook.com" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-secondary hover:text-primary transition-all active:scale-95"
-              aria-label="Facebook"
-            >
-              <Facebook className="h-3.5 w-3.5" />
-            </a>
-            <a 
-              href="https://instagram.com" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-secondary hover:text-primary transition-all active:scale-95"
-              aria-label="Instagram"
-            >
-              <Instagram className="h-3.5 w-3.5" />
-            </a>
-            <a 
-              href="https://youtube.com" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-secondary hover:text-primary transition-all active:scale-95"
-              aria-label="YouTube"
-            >
-              <Youtube className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
-
-        {/* Quick Links 2-Column Grid with Comfortable Tap Targets */}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-medium text-white/80 border-b border-white/10 pb-5">
-          <Link href="/" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Store Home</span>
-          </Link>
-          <Link href="/track" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Track Order</span>
-          </Link>
-          <Link href="/about" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Our Farm Legacy</span>
-          </Link>
-          <Link href="/blog" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Ayurveda Blog</span>
-          </Link>
-          <Link href="/contact" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Contact Desk</span>
-          </Link>
-          <Link href="/about" className="py-2 hover:text-secondary flex items-center gap-1.5 transition-colors">
-            <ChevronRight className="w-3 h-3 text-secondary/70 shrink-0" />
-            <span>Pure Vedic Method</span>
-          </Link>
-        </div>
-
-        {/* 1-Tap Quick Contact Action Bar */}
-        <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-5">
-          <a
-            href="tel:+919876543210"
-            className="flex-1 py-2 px-2.5 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center gap-1.5 text-[11px] font-bold text-white transition-all active:scale-95"
-          >
-            <Phone className="w-3.5 h-3.5 text-secondary" />
-            <span>Call</span>
-          </a>
-          <a
-            href="https://wa.me/919876543210?text=Hi%20Vivaan%20Farms,%20I'd%20like%20to%20inquire%20about%20your%20products."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 py-2 px-2.5 rounded-xl bg-[#00d757]/20 border border-[#00d757]/40 hover:bg-[#00d757]/30 flex items-center justify-center gap-1.5 text-[11px] font-bold text-emerald-300 transition-all active:scale-95"
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-            <span>WhatsApp</span>
-          </a>
-          <a
-            href="mailto:care@vivaanfarms.com"
-            className="flex-1 py-2 px-2.5 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center gap-1.5 text-[11px] font-bold text-white transition-all active:scale-95"
-          >
-            <Mail className="w-3.5 h-3.5 text-secondary" />
-            <span>Email</span>
-          </a>
-        </div>
-
-        {/* Streamlined Newsletter Row */}
-        <div className="space-y-2">
-          <div className="text-[10px] font-black uppercase tracking-wider text-white/60">
-            Newsletter & Exclusive Offers
-          </div>
-          <form onSubmit={handleSubscribe} className="relative flex items-center">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email for farm updates..."
-              required
-              className="w-full bg-white/10 text-white placeholder-white/40 text-xs rounded-full py-2.5 pl-4 pr-10 border border-white/20 focus:outline-none focus:border-secondary"
-            />
-            <button
-              type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-secondary text-primary flex items-center justify-center font-bold active:scale-90 transition-transform cursor-pointer"
-              title="Subscribe"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
-          {subscribed && (
-            <p className="text-[11px] text-secondary font-bold flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Subscribed successfully!
-            </p>
-          )}
-        </div>
-
-        {/* Compact Legal Links, Trust & Copyright */}
-        <div className="pt-2 text-center space-y-2.5">
-          <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] text-white/60">
-            <Link href="/about" className="hover:text-secondary py-1">Privacy Policy</Link>
-            <span>•</span>
-            <Link href="/about" className="hover:text-secondary py-1">Terms of Service</Link>
-            <span>•</span>
-            <Link href="/about" className="hover:text-secondary py-1">Shipping & Refunds</Link>
-          </div>
-
-          <div className="flex items-center justify-center gap-1.5 text-[8.5px] font-black text-white/50 tracking-wider">
-            <span className="px-1.5 py-0.5 rounded bg-white/10">UPI</span>
-            <span className="px-1.5 py-0.5 rounded bg-white/10">VISA</span>
-            <span className="px-1.5 py-0.5 rounded bg-white/10">MASTERCARD</span>
-            <span className="px-1.5 py-0.5 rounded bg-white/10">COD</span>
-          </div>
-
-          <p className="text-[10px] text-white/40">
-            © 2025 Vivaan Farms Natural Pvt Ltd · Gujarat, India
-          </p>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 2. DESKTOP RICH FOOTER (>= md) - Original Full Layout Intact              */}
-      {/* ========================================================================= */}
-      <div className="hidden md:block max-w-[1400px] mx-auto px-10 pt-16 pb-8 relative z-10">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 pb-12 border-b border-white/10">
+      {/* ── Main Footer Grid ── */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-6 pb-20 md:py-16 md:pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8 lg:gap-10">
           
-          {/* Column 1: Newsletter / Stay Connected */}
-          <div className="relative space-y-4 lg:pr-4">
-            <h2 className="text-xl md:text-2xl font-headline font-bold tracking-tight text-white">
-              Stay Connected
-            </h2>
-            <p className="text-xs md:text-sm text-white/70 leading-relaxed">
-              Join our newsletter for fresh farm updates, authentic recipes, and exclusive discount offers.
+          {/* Column 1: Brand & Contact */}
+          <div className="lg:col-span-2 space-y-3 md:space-y-4">
+            <div className="flex items-center gap-2.5 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#144D3D] border border-[#8CD790]/30 flex items-center justify-center text-white font-serif font-black shadow-xs shrink-0">
+                <svg viewBox="0 0 40 40" className="w-5 h-5 md:w-6 md:h-6 text-[#8CD790]" fill="currentColor">
+                  <path d="M20 5 C28 5 35 12 35 20 C35 28 28 35 20 35 C12 35 5 28 5 20 C5 12 12 5 20 5 Z M20 9 C14 9 9 14 9 20 C9 26 14 31 20 31 C26 31 31 26 31 20 C31 14 26 9 20 9 Z" fill="#F8D279" />
+                  <path d="M20 12 C23 15 25 18 24 22 C23 26 19 28 16 26 C13 24 13 20 16 17 C18 15 19 13 20 12 Z" fill="#0D3B2E" />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif font-black text-lg md:text-xl text-white tracking-tight leading-none">
+                  VIVAAN
+                </span>
+                <span className="text-[8px] md:text-[9px] font-black text-[#F8D279] tracking-[2.5px] uppercase mt-0.5">
+                  ORGANIC FARMS
+                </span>
+              </div>
+            </div>
+
+            <p className="text-[11px] md:text-sm text-emerald-100/80 leading-relaxed max-w-sm">
+              Reviving authentic Vedic food traditions from our native soil to your table. Handcrafted A2 Gir Cow Bilona Ghee, cold wood-pressed unrefined oils, and raw forest honey with zero chemicals.
             </p>
-            
-            <form onSubmit={handleSubscribe} className="relative mt-2" suppressHydrationWarning>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                required
-                suppressHydrationWarning
-                className="w-full bg-white/10 text-white placeholder-white/40 text-xs md:text-sm rounded-full py-3 pl-4 pr-12 border border-white/20 focus:outline-none focus:border-secondary focus:bg-white/15 transition-all"
-              />
-              <button
-                type="submit"
-                className="absolute right-1 top-1 h-8 w-8 md:h-9 md:w-9 rounded-full bg-secondary text-primary font-bold flex items-center justify-center transition-transform hover:scale-105 active:scale-95 shadow-md"
-                title="Subscribe"
-              >
-                <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="sr-only">Subscribe</span>
-              </button>
+
+            <div className="space-y-1.5 md:space-y-2 text-[11px] md:text-sm text-emerald-100/90 pt-0.5 md:pt-1">
+              <a href="tel:+919217428737" className="flex items-center gap-2 hover:text-[#F8D279] transition-colors">
+                <Phone className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#F8D279] shrink-0" />
+                <span>Customer Care: +91 92174 28737 / +91 89508 00633</span>
+              </a>
+              <a href="mailto:support@varahifarms.com" className="flex items-center gap-2 hover:text-[#F8D279] transition-colors">
+                <Mail className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#F8D279] shrink-0" />
+                <span>support@varahifarms.com</span>
+              </a>
+              <div className="flex items-center gap-2 text-emerald-200/60 text-[10px] md:text-xs">
+                <Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#F8D279] shrink-0" />
+                <span>Monday - Sunday: 8:00 AM - 8:00 PM IST</span>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-2.5 md:gap-3 pt-1 md:pt-2">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-[#F8D279] hover:text-[#0D3B2E] transition-all flex items-center justify-center text-white" aria-label="Instagram">
+                <Instagram className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-[#F8D279] hover:text-[#0D3B2E] transition-all flex items-center justify-center text-white" aria-label="YouTube">
+                <Youtube className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 hover:bg-[#F8D279] hover:text-[#0D3B2E] transition-all flex items-center justify-center text-white" aria-label="Facebook">
+                <Facebook className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Column 2: Quick Shop */}
+          <div className="space-y-2 md:space-y-3">
+            <h4 className="font-serif font-black text-xs md:text-sm uppercase tracking-wider text-[#F8D279]">
+              Our Pantry
+            </h4>
+            <ul className="space-y-1.5 md:space-y-2 text-[11px] md:text-sm text-emerald-100/80">
+              <li>
+                <Link href="/shop?cat=ghee" className="hover:text-white transition-colors">
+                  A2 Desi Gir Cow Ghee
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?cat=ghee" className="hover:text-white transition-colors">
+                  Murrah Buffalo Bilona Ghee
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?cat=oils" className="hover:text-white transition-colors">
+                  Wood Pressed Mustard Oil
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?cat=oils" className="hover:text-white transition-colors">
+                  Wood Pressed Groundnut Oil
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?cat=honey" className="hover:text-white transition-colors">
+                  Raw Wild Forest Honey
+                </Link>
+              </li>
+              <li>
+                <Link href="/shop?cat=combos" className="hover:text-white transition-colors">
+                  Healthy Combo Packs
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Trust & Process */}
+          <div className="space-y-2 md:space-y-3">
+            <h4 className="font-serif font-black text-xs md:text-sm uppercase tracking-wider text-[#F8D279]">
+              Transparency
+            </h4>
+            <ul className="space-y-1.5 md:space-y-2 text-[11px] md:text-sm text-emerald-100/80">
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  Our Native Farms & Dairy
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  The Vedic Bilona Method
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  Wood Press Extraction
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  Lab Test Reports
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Bulk & Export Inquiries
+                </Link>
+              </li>
+              <li>
+                <Link href="/track" className="hover:text-white transition-colors">
+                  Track Your Order
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Newsletter Box */}
+          <div className="space-y-2 md:space-y-3">
+            <h4 className="font-serif font-black text-xs md:text-sm uppercase tracking-wider text-[#F8D279]">
+              Join The Family
+            </h4>
+            <p className="text-[11px] md:text-xs text-emerald-100/80 leading-relaxed">
+              Subscribe to get <span className="text-[#F8D279] font-bold">10% OFF</span> on your next order, weekly purity tips & exclusive harvest access.
+            </p>
+
+            <form onSubmit={handleSubscribe} className="space-y-1.5 md:space-y-2 pt-0.5 md:pt-1">
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email address"
+                  required
+                  className="w-full bg-[#144D3D] border border-white/20 rounded-xl px-3 md:px-3.5 py-2 md:py-2.5 text-[11px] md:text-xs text-white placeholder-emerald-200/50 focus:outline-none focus:border-[#F8D279] transition-colors"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-2.5 md:px-3 rounded-lg bg-[#F8D279] text-[#0D3B2E] font-black text-[10px] md:text-[11px] uppercase hover:bg-amber-300 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Join</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              {subscribed && (
+                <p className="text-xs text-emerald-300 font-bold flex items-center gap-1 pt-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Welcome to Vivaan Farms!
+                </p>
+              )}
             </form>
 
-            {subscribed && (
-              <p className="text-xs text-secondary font-bold animate-fade-in flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Thank you for subscribing to Vivaan Farms!
-              </p>
-            )}
-
-            <div className="absolute -left-6 -bottom-6 h-28 w-28 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
-          </div>
-
-          {/* Column 2: Quick Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white/50">
-              Quick Links
-            </h3>
-            <nav className="space-y-2.5 text-xs md:text-sm font-medium text-white/80">
-              <Link href="/" className="block transition-colors hover:text-secondary">
-                Home
-              </Link>
-              <Link href="/about" className="block transition-colors hover:text-secondary">
-                Our Legacy & Farm
-              </Link>
-              <Link href="/track" className="block transition-colors hover:text-secondary">
-                Track Order
-              </Link>
-              <Link href="/blog" className="block transition-colors hover:text-secondary">
-                Ayurveda & Health Blog
-              </Link>
-              <Link href="/contact" className="block transition-colors hover:text-secondary">
-                Contact Us
-              </Link>
-            </nav>
-          </div>
-
-          {/* Column 3: Contact Us */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white/50">
-              Contact Us
-            </h3>
-            <address className="space-y-3 text-xs md:text-sm not-italic text-white/80 font-medium">
-              <p className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                <span>Vivaan Farms, Gir Somnath Region, Gujarat 362268, India</span>
-              </p>
-              <p className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-secondary shrink-0" />
-                <span>+91 98765 43210</span>
-              </p>
-              <p className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-secondary shrink-0" />
-                <span>care@vivaanfarms.com</span>
-              </p>
-            </address>
-          </div>
-
-          {/* Column 4: Brand & Social */}
-          <div className="relative space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-md shrink-0">
-                <Image 
-                  src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png" 
-                  alt="Vivaan Farms Logo" 
-                  width={40} 
-                  height={40} 
-                  className="object-contain" 
-                />
-              </div>
-              <div>
-                <div className="font-headline text-lg font-black tracking-wider leading-none uppercase text-white">
-                  Vivaan Farms
-                </div>
-                <div className="text-[8px] font-extrabold text-secondary tracking-[2px] uppercase mt-0.5">
-                  100% Pure Gir Cow Bilona Ghee
-                </div>
-              </div>
-            </div>
-
-            <p className="text-xs text-white/60 leading-relaxed">
-              Crafted using traditional Vedic Bilona methods for uncompromised aroma, taste, and health benefits.
-            </p>
-
-            <div className="flex items-center gap-3 pt-1">
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-secondary hover:text-primary transition-all flex items-center justify-center text-white/80 border border-white/10"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-secondary hover:text-primary transition-all flex items-center justify-center text-white/80 border border-white/10"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://youtube.com" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-secondary hover:text-primary transition-all flex items-center justify-center text-white/80 border border-white/10"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-4 w-4" />
-              </a>
-            </div>
-
-            <div className="pt-2">
-              <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-white/70">
-                <ShieldCheck className="w-3.5 h-3.5 text-secondary" /> 256-Bit SSL Safe Checkout
-              </div>
+            <div className="pt-1 md:pt-2 text-[10px] md:text-[11px] text-emerald-200/60 leading-tight">
+              🔒 100% Privacy. Zero Spam Guarantee.
             </div>
           </div>
 
         </div>
 
-        {/* Bottom Bar: Copyright & Payment Icons */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <p className="text-xs text-white/50">
-            © 2025 Vivaan Farms Natural Private Limited. All rights reserved.
+        {/* ── Bottom Bar: Copyright & Payment Badges ── */}
+        <div className="mt-6 md:mt-12 pt-4 md:pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 text-[10px] md:text-xs text-emerald-200/70">
+          <p className="text-center md:text-left">
+            © 2026 Vivaan Organic Farms Private Limited. All Rights Reserved. FSSAI Lic. No. 10822003000214
           </p>
-          
-          <nav className="flex flex-wrap justify-center gap-4 text-xs text-white/70">
-            <Link href="/about" className="transition-colors hover:text-secondary">
-              Privacy Policy
-            </Link>
-            <span>•</span>
-            <Link href="/about" className="transition-colors hover:text-secondary">
-              Terms of Service
-            </Link>
-            <span>•</span>
-            <Link href="/about" className="transition-colors hover:text-secondary">
-              Shipping & Refund
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-1.5 text-[9px] font-black text-white/60 tracking-wider">
-            <span className="px-2 py-1 rounded bg-white/10 border border-white/15">UPI</span>
-            <span className="px-2 py-1 rounded bg-white/10 border border-white/15">VISA</span>
-            <span className="px-2 py-1 rounded bg-white/10 border border-white/15">MASTERCARD</span>
-            <span className="px-2 py-1 rounded bg-white/10 border border-white/15">NETBANKING</span>
-            <span className="px-2 py-1 rounded bg-white/10 border border-white/15">COD</span>
+          <div className="flex items-center gap-2.5 md:gap-3 text-[10px] md:text-xs font-semibold text-emerald-100/90">
+            <span>🛡️ 100% Secure Checkout</span>
+            <span>·</span>
+            <span>UPI / Cards / NetBanking / COD</span>
           </div>
         </div>
+
       </div>
 
-      {/* Watermark Logo */}
-      <div className="absolute bottom-[-40px] md:bottom-[-100px] left-1/2 -translate-x-1/2 text-[18vw] md:text-[25vw] font-headline font-black text-white/[0.03] pointer-events-none select-none uppercase tracking-tighter">
-        VIVAAN
-      </div>
     </footer>
   );
 };

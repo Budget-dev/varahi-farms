@@ -24,7 +24,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
+    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-24 md:pb-0">
       <div className="sticky top-0 z-[900]">
         <Ticker />
         <Header 

@@ -1,7 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+
+const motion = {
+  div: React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { variants?: any; initial?: any; animate?: any }>(
+    ({ variants, initial, animate, ...props }, ref) => <div ref={ref} {...props} />
+  ),
+  button: React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { whileTap?: any }>(
+    ({ whileTap, ...props }, ref) => <button ref={ref} {...props} />
+  ),
+};
+motion.div.displayName = "MotionDiv";
+motion.button.displayName = "MotionButton";
 import { ChevronLeft, ChevronRight, Clock, Star, ShoppingCart, ArrowRight, Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";

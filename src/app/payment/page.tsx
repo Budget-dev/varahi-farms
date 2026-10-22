@@ -186,25 +186,25 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
+    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-12 md:pb-0">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
       <Ticker />
       <Header onOpenCart={() => {}} cartCount={totalQty} onFilter={() => {}} onSearch={() => {}} />
 
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-10 md:py-16 flex flex-col items-center">
+      <main className="max-w-[1200px] mx-auto px-3.5 sm:px-6 py-5 sm:py-10 md:py-16 flex flex-col items-center">
         <div className="w-full max-w-2xl">
           <button 
             onClick={() => router.back()} 
-            className="flex items-center gap-1.5 text-primary font-bold text-xs sm:text-sm mb-6 sm:mb-8 hover:gap-2.5 transition-all cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-primary font-bold text-xs sm:text-sm mb-4 sm:mb-8 hover:gap-2.5 transition-all cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" /> Back to Checkout
           </button>
 
-          <div className="bg-white rounded-3xl md:rounded-[40px] shadow-xl overflow-hidden border border-primary/10">
-            <div className="bg-primary p-6 sm:p-8 md:p-10 text-white text-center relative overflow-hidden">
+          <div className="bg-white rounded-2xl sm:rounded-3xl md:rounded-[40px] shadow-xl overflow-hidden border border-primary/10">
+            <div className="bg-primary p-5 sm:p-8 md:p-10 text-white text-center relative overflow-hidden">
               <div className="absolute top-[-40px] right-[-40px] w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="text-[10px] font-black uppercase tracking-[3px] opacity-60 mb-2">Total Payable Amount</div>
-              <div className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold leading-none break-all">
+              <div className="font-headline text-3xl sm:text-5xl md:text-7xl font-extrabold leading-none break-all">
                 ₹{total.toLocaleString('en-IN')}
               </div>
             </div>

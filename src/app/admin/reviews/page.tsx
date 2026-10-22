@@ -37,7 +37,6 @@ import { collection, doc, updateDoc, deleteDoc, query, where, getDocs } from 'fi
 import { ProductReview, ReviewStatus } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 
 export default function AdminReviewsPage() {
   const db = useFirestore();
@@ -146,11 +145,11 @@ export default function AdminReviewsPage() {
     try {
       const q = query(collection(db, 'reviews'), where('productId', '==', productId), where('status', '==', 'approved'));
       const snapshot = await getDocs(q);
-      const approvedList = snapshot.docs.map(doc => doc.data());
+      const approvedList = snapshot.docs.map((doc: any) => doc.data());
       const reviewCount = approvedList.length;
       let rating = 5.0;
       if (reviewCount > 0) {
-        const totalScore = approvedList.reduce((acc, curr) => acc + (Number(curr.rating) || 5), 0);
+        const totalScore = approvedList.reduce((acc: number, curr: any) => acc + (Number(curr.rating) || 5), 0);
         rating = Number((totalScore / reviewCount).toFixed(1));
       }
       

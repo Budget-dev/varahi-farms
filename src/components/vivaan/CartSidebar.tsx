@@ -147,7 +147,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
                     {renderItemImage(item)}
                   </div>
                   <div className="flex-1 min-w-0 pr-6">
-                    <h4 className="font-headline text-sm md:text-base font-bold text-foreground truncate">{item.name}</h4>
+                    <h4 className="font-headline text-sm md:text-base font-bold text-foreground truncate capitalize">{item.name}</h4>
                     <p className="text-[10px] text-[#7A6848] font-bold uppercase tracking-wider mb-2">{item.vol}</p>
                     <div className="flex items-center justify-between">
                       <div className="font-bold text-base md:text-lg text-primary">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>

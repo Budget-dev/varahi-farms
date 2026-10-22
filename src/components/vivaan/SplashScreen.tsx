@@ -2,7 +2,10 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+const motion = {
+  div: ({ children, className }: any) => <div className={className}>{children}</div>,
+  h1: ({ children, className }: any) => <h1 className={className}>{children}</h1>,
+};
 
 export const SplashScreen: React.FC = () => {
   return (

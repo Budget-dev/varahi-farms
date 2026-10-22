@@ -40,7 +40,7 @@ const HoneyLoader = () => {
         <div className="font-headline text-2xl font-extrabold text-primary">Collecting Forest Honey...</div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes honey-flow {
           0%, 100% { transform: scaleX(0.95); opacity: 0.8; }
           50% { transform: scaleX(1.1); opacity: 1; }

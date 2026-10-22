@@ -48,3 +48,24 @@ firestore-debug.log
 .modified
 /dist
 
+# backups and service account keys (never commit)
+backups/
+/backups/
+*.key.json
+*key*.json
+*credentials*.json
+*-service-account*.json
+*serviceAccount*.json
+*service_account*.json
+firestore.rules.backup
+rules.diff
+*.diff
+scripts/test-*
+
+# audit and reference artifacts
+reference-screenshots/
+spec/
+
+# IDE and agent configs
+.vscode/
+.agents/

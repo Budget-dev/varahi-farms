@@ -1,15 +1,19 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
-import { Hero } from '@/components/vivaan/Hero';
-import { TrustBar } from '@/components/vivaan/TrustBar';
-import { ProductCard } from '@/components/vivaan/ProductCard';
-import { ProductCarousel } from '@/components/ui/product-carousel';
-import { WhyChoose } from '@/components/vivaan/WhyChoose';
-import { NativeSection } from '@/components/vivaan/NativeSection';
+import { FestiveHero } from '@/components/vivaan/FestiveHero';
+import { CleanestPantrySection } from '@/components/vivaan/CleanestPantrySection';
+import { NativeIngredientsSection } from '@/components/vivaan/NativeIngredientsSection';
+import { FocusOilsSection } from '@/components/vivaan/FocusOilsSection';
+import { FocusGheeSection } from '@/components/vivaan/FocusGheeSection';
+import { QualityAssuranceSection } from '@/components/vivaan/QualityAssuranceSection';
+import { HealthyCombosSection } from '@/components/vivaan/HealthyCombosSection';
+import { SuperfoodsSection } from '@/components/vivaan/SuperfoodsSection';
+import { CustomerReviewsSection } from '@/components/vivaan/CustomerReviewsSection';
+import { CertificationsStrip } from '@/components/vivaan/CertificationsStrip';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { BottomNav } from '@/components/vivaan/BottomNav';
@@ -19,15 +23,142 @@ import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-produc
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { motion } from 'framer-motion';
-import { Coins, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
-import { ErrorCard } from '@/components/ui/ErrorCard';
 
-const CATEGORIES = [
-  { id: 'all', label: 'All', ico: '🌿' },
-  { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-  { id: 'sweets', label: 'Sweets', ico: '🎁' },
-  { id: 'honey', label: 'Honey', ico: '🍯' },
+const DEFAULT_CATALOG: Product[] = [
+  {
+    id: 'ghee-gir-tin-1l',
+    name: 'A2 Desi Gir Cow Cultured Bilona Ghee (Heritage Tin)',
+    cat: 'ghee',
+    vol: '1000 ml (1 L)',
+    price: 1850,
+    mrpPrice: 2200,
+    rating: 5.0,
+    reviewCount: 940,
+    purityCoins: 185,
+    soldCountLabel: '5.2k sold',
+    stock: 80,
+    statusBadge: 'Traditional Metal Tin',
+    badges: ['Top Rated'],
+    pi: 0,
+    imageUrls: ['/images/products/ghee_tin.jpg'],
+    vars: [
+      { s: '500 ml', p: 980, mrp: 1150, on: false },
+      { s: '1000 ml (1 L)', p: 1850, mrp: 2200, on: true },
+      { s: '5000 ml (5 L)', p: 8900, mrp: 10500, on: false },
+    ],
+    description: 'Slow-cooked over slow wood fire in earthen pots, made from cultured A2 Gir curd using the two-way wooden bilona.'
+  },
+  {
+    id: 'oil-mustard-yellow',
+    name: 'Wood Pressed Yellow Mustard Oil (Kachi Ghani)',
+    cat: 'oils',
+    vol: '500 ml',
+    price: 360,
+    mrpPrice: 450,
+    rating: 4.9,
+    reviewCount: 420,
+    purityCoins: 36,
+    soldCountLabel: '2.8k sold',
+    stock: 50,
+    statusBadge: 'Cold-Pressed < 40°C',
+    badges: ['Bestseller'],
+    pi: 1,
+    imageUrls: ['/images/products/mustard_oil.jpg'],
+    vars: [
+      { s: '500 ml', p: 360, mrp: 450, on: true },
+      { s: '1 L', p: 680, mrp: 850, on: false },
+      { s: '5 L Can', p: 3200, mrp: 3900, on: false },
+    ],
+    description: 'Slow-pressed from indigenous yellow mustard seeds. Rich pungent aroma and natural golden color.'
+  },
+  {
+    id: 'ghee-gir-jar-500ml',
+    name: 'A2 Desi Gir Cow Cultured Bilona Ghee (Glass Jar)',
+    cat: 'ghee',
+    vol: '500 ml',
+    price: 980,
+    mrpPrice: 1150,
+    rating: 4.9,
+    reviewCount: 1420,
+    purityCoins: 98,
+    soldCountLabel: '8.4k sold',
+    stock: 120,
+    statusBadge: 'Golden Granular Danedar',
+    badges: ['Bestseller'],
+    pi: 2,
+    imageUrls: ['/images/products/ghee_jar.jpg'],
+    vars: [
+      { s: '250 ml', p: 520, mrp: 600, on: false },
+      { s: '500 ml', p: 980, mrp: 1150, on: true },
+      { s: '1000 ml (1 L)', p: 1850, mrp: 2200, on: false },
+    ],
+    description: 'Golden granular texture with intoxicating nutty aroma. High in natural CLA, butyric acid, and fat-soluble vitamins.'
+  },
+  {
+    id: 'oil-groundnut-cold',
+    name: 'Wood Pressed Groundnut Oil (Peanut Oil Canister)',
+    cat: 'oils',
+    vol: '5 L Can',
+    price: 1850,
+    mrpPrice: 2200,
+    rating: 4.9,
+    reviewCount: 310,
+    purityCoins: 185,
+    soldCountLabel: '1.9k sold',
+    stock: 40,
+    statusBadge: 'Zero Palm Oil',
+    badges: ['Value Pack'],
+    pi: 3,
+    imageUrls: ['/images/products/groundnut_can.jpg'],
+    vars: [
+      { s: '1 L', p: 390, mrp: 480, on: false },
+      { s: '5 L Can', p: 1850, mrp: 2200, on: true },
+    ],
+    description: 'Heart-healthy cooking oil extracted from handpicked Saurashtra peanuts on traditional wooden kolhu.'
+  },
+  {
+    id: 'honey-wild-forest',
+    name: 'Raw Unprocessed Wild Forest Honey',
+    cat: 'honey',
+    vol: '450 g',
+    price: 490,
+    mrpPrice: 590,
+    rating: 5.0,
+    reviewCount: 780,
+    purityCoins: 49,
+    soldCountLabel: '4.8k sold',
+    stock: 90,
+    statusBadge: 'Unpasteurized & Raw',
+    badges: ['Wild Harvest'],
+    pi: 4,
+    imageUrls: ['/images/products/honey_jar.jpg'],
+    vars: [
+      { s: '450 g', p: 490, mrp: 590, on: true },
+      { s: '1 kg', p: 950, mrp: 1150, on: false }
+    ],
+    description: 'Ethically harvested from wild bee colonies in Gujarat and Himachal deciduous forests. Rich pollen enzymes.'
+  },
+  {
+    id: 'combo-ghee-twin-pack',
+    name: 'A2 Desi Gir Cow Ghee Twin Value Pack (2 x 500ml)',
+    cat: 'combo',
+    vol: '1000 ml (2 Jars)',
+    price: 1750,
+    mrpPrice: 2300,
+    rating: 5.0,
+    reviewCount: 520,
+    purityCoins: 175,
+    soldCountLabel: '2.4k sold',
+    stock: 60,
+    statusBadge: 'Save ₹550',
+    badges: ['Value Gift Pack'],
+    pi: 5,
+    imageUrls: ['/images/products/combo_pack.jpg'],
+    vars: [
+      { s: '2 x 500ml Jars', p: 1750, mrp: 2300, on: true }
+    ],
+    description: 'Double the goodness. Two premium glass jars of Vedic Bilona A2 Gir Cow Ghee at our lowest combo price.'
+  }
 ];
 
 export default function VivaanFarms() {
@@ -35,18 +166,17 @@ export default function VivaanFarms() {
   const db = useFirestore();
   
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
-  const { data: dbProducts, isLoading: productsLoading, error: productsError } = useCollection(productsRef);
+  const { data: dbProducts } = useCollection(productsRef);
 
-  const [filter, setFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
   const products = useMemo(() => {
-    if (!dbProducts) return [];
+    if (!dbProducts || dbProducts.length === 0) return DEFAULT_CATALOG;
     
-    return dbProducts
+    const mapped = dbProducts
       .filter(p => p.isLive !== false)
       .map((p, i) => {
         const catId = (p.categoryId || 'uncategorized').toLowerCase();
@@ -60,49 +190,61 @@ export default function VivaanFarms() {
           vol: p.vol || (Array.isArray(p.vars) && p.vars.find((v: any) => v.on)?.s) || (p.volumeValue ? `${p.volumeValue}${p.volumeUnit || ''}` : 'Standard'),
           pi: i,
           rating: Number(p.rating) || 4.9,
-          reviewCount: Number(p.reviewCount) || 0,
+          reviewCount: Number(p.reviewCount) || 120,
           soldCountLabel: p.soldCountLabel || 'Hot',
-          statusBadge: p.statusBadge || '',
+          statusBadge: p.statusBadge || 'Vedic Purity',
           badges: Array.isArray(p.badges) ? p.badges : [],
           description: p.description || '',
+          imageUrls: Array.isArray(p.imageUrls) && p.imageUrls.length > 0 ? p.imageUrls : ['/images/products/ghee_tin.jpg'],
           vars: Array.isArray(p.vars) && p.vars.length > 0 
             ? p.vars 
             : [{ s: 'Standard', p: basePrice, on: true }]
         } as Product;
       });
+
+    // Merge if fewer items
+    if (mapped.length < 6) {
+      const existingIds = new Set(mapped.map(m => m.id));
+      const fallbacksToAdd = DEFAULT_CATALOG.filter(d => !existingIds.has(d.id));
+      return [...mapped, ...fallbacksToAdd];
+    }
+
+    return mapped;
   }, [dbProducts]);
 
   const handleSearch = async (queryStr: string) => {
-    if (!queryStr.trim()) {
-      setFilter('all');
-      return;
-    }
+    if (!queryStr.trim()) return;
     try {
       const res = await naturalLanguageProductSearch({ query: queryStr });
       if (res.categories.length > 0) {
-        setFilter(res.categories[0]);
+        scrollToPantry();
       }
-      const el = document.getElementById('products');
-      el?.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
       console.error(e);
     }
   };
 
-  const handleCategoryFilter = (cat: string) => {
-    setFilter(cat);
-    const el = document.getElementById('products');
+  const scrollToPantry = () => {
+    const el = document.getElementById('cleanest-pantry');
     if (el) {
-      const offset = 100;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+  const handleCategoryFilter = (catId: string) => {
+    if (catId === 'all') {
+      scrollToPantry();
+    } else if (catId === 'oils') {
+      const el = document.getElementById('focus-oils') || document.getElementById('cleanest-pantry');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (catId === 'ghee') {
+      const el = document.getElementById('focus-ghee') || document.getElementById('cleanest-pantry');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (catId === 'combos') {
+      const el = document.getElementById('healthy-combos') || document.getElementById('cleanest-pantry');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      scrollToPantry();
     }
   };
 
@@ -112,25 +254,18 @@ export default function VivaanFarms() {
       setIsCartOpen(true);
       setActiveTab('home');
     } else if (tab === 'shop') {
-      const el = document.getElementById('products');
-      el?.scrollIntoView({ behavior: 'smooth' });
+      scrollToPantry();
       setActiveTab('home');
     } else if (tab === 'account') {
       router.push('/track');
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    if (filter === 'all') return products;
-    return products.filter(p => p.cat === filter);
-  }, [products, filter]);
-
-  const gheeProducts = useMemo(() => products.filter(p => p.cat === 'ghee').slice(0, 6), [products]);
-  const sweetsProducts = useMemo(() => products.filter(p => p.cat === 'sweets').slice(0, 6), [products]);
-  const honeyProducts = useMemo(() => products.filter(p => p.cat === 'honey').slice(0, 6), [products]);
+  const cartIds = useMemo(() => cart.map(c => c.id), [cart]);
 
   return (
     <>
+      {/* ── 1. Top Announcement Strip & Navigation Header ── */}
       <div className="sticky top-0 z-[900]">
         <Ticker />
         <Header 
@@ -143,205 +278,85 @@ export default function VivaanFarms() {
       
       <div 
         className={cn(
-          "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0"
+          "min-h-screen bg-[#FFFFFF] text-[#100C06] overflow-x-hidden pb-24 md:pb-0"
         )}
       >
         <main>
-          <Hero />
-          
-          <div className="text-center py-5 md:py-12 px-4 sm:px-5 bg-white border-b border-primary/5">
-            <h2 className="font-headline text-2xl sm:text-3xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
-              Welcome To Vivaan Farms!
-            </h2>
-            <p className="text-[#7A6848] text-xs sm:text-sm md:text-lg font-bold tracking-wide uppercase">
-              You&apos;re One Step Closer to Purity
-            </p>
-            <div className="w-10 h-0.5 bg-primary/10 mx-auto mt-2.5 rounded-full"></div>
+          {/* ── 2. Hero Festive Purity Sale Banner ── */}
+          <FestiveHero onShopClick={scrollToPantry} />
+
+          {/* ── 3. Welcome to Vivaan / Your One-Stop Cleanest Pantry ── */}
+          <div id="cleanest-pantry">
+            <CleanestPantrySection
+              products={products}
+              cartIds={cartIds}
+              onAddToCart={(p, v) => addToCart(p)}
+            />
           </div>
 
-          <TrustBar />
+          {/* ── 4. Native Ingredients. No Substitutes. ── */}
+          <NativeIngredientsSection />
 
-          <section className="py-4 md:py-16" id="products">
-            <div className="max-w-[1400px] mx-auto px-3 sm:px-5 md:px-10">
-              <div className="flex justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="inline-flex items-center gap-1 sm:gap-2 bg-white p-1.5 sm:p-2 rounded-full border border-[#DDD0B5]/60 shadow-sm mx-auto">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => handleCategoryFilter(cat.id)}
-                      className={cn(
-                        "flex items-center gap-1.5 md:gap-2 px-3.5 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold md:font-extrabold transition-all whitespace-nowrap shrink-0 active:scale-95 select-none",
-                        filter === cat.id 
-                          ? "bg-primary text-white shadow-md shadow-primary/20" 
-                          : "text-[#7A6848] hover:text-primary hover:bg-primary/5"
-                      )}
-                    >
-                      <span className="text-sm md:text-base">{cat.ico}</span>
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {productsError && (
-                <div className="mb-6 max-w-xl mx-auto">
-                  <ErrorCard
-                    error={productsError}
-                    compact
-                    title="Live Products Database Notice"
-                    message="We couldn't connect to the live product inventory. Showing available items."
-                  />
-                </div>
-              )}
-
-              {productsLoading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 items-stretch">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white/50 rounded-2xl md:rounded-3xl aspect-[3/4] animate-pulse border-2 border-dashed border-[#DDD0B5]/30"></div>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 items-stretch">
-                    {filteredProducts.map((p) => (
-                      <div key={p.id} className="h-full flex flex-col">
-                        <ProductCard 
-                          product={p} 
-                          isInCart={cart.some(c => c.id === p.id)}
-                          onOpen={() => router.push(`/product/${p.id}`)}
-                          onAdd={() => addToCart(p)}
-                        />
-                      </div>
-                    ))}
-                    {filteredProducts.length === 0 && !productsLoading && (
-                      <div className="col-span-full py-16 text-center bg-white/50 rounded-[32px] border-2 border-dashed border-primary/10 mx-auto w-full max-w-2xl">
-                        <div className="text-4xl mb-4">🍃</div>
-                        <h3 className="font-headline text-2xl font-bold text-primary">Harvesting New Batches</h3>
-                        <p className="text-muted-foreground mt-2 text-sm font-medium">No products found in this category yet. Check back soon!</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {filteredProducts.length > 0 && (
-                    <div className="mt-4 md:mt-8 flex justify-end">
-                      <button 
-                        onClick={() => handleCategoryFilter('all')}
-                        className="h-8 md:h-9 px-4 md:px-5 rounded-full border border-primary text-primary font-bold text-[11px] md:text-xs tracking-wider uppercase hover:bg-primary hover:text-white transition-all shadow-xs flex items-center gap-1.5 group active:scale-95"
-                      >
-                        See All Products
-                        <ChevronRight className="w-3 h-3 md:w-3.5 md:h-3.5 transition-transform group-hover:translate-x-0.5" />
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </section>
-
-          <div className="bg-[#0D3520] py-4 md:py-8 flex items-center justify-center text-white px-5 border-y border-white/5 relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-            <div className="flex items-center gap-4 md:gap-8 text-center relative z-10">
-              <div className="w-10 h-10 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/20">
-                <Coins className="text-yellow-400 w-5 h-5 md:w-8 md:h-8" />
-              </div>
-              <div className="text-left">
-                <div className="font-headline text-lg md:text-4xl font-extrabold leading-tight">Get Upto 25% Off with Purity Coins! →</div>
-                <p className="text-[8px] md:text-xs font-bold text-white/40 uppercase tracking-[2px] mt-1">Collect coins on every order and save big on your next haul</p>
-              </div>
-            </div>
+          {/* ── 6. Product in Focus: Explore Our Cold-Pressed Oils ── */}
+          <div id="focus-oils">
+            <FocusOilsSection
+              products={products}
+              cartIds={cartIds}
+              onAddToCart={(p, v) => addToCart(p)}
+            />
           </div>
 
-          <WhyChoose />
-
-          <div className="space-y-6 md:space-y-12 py-6 md:py-16 bg-[#FDFBFA]">
-            {/* A2 Ghee Carousel Section */}
-            {gheeProducts.length > 0 && (
-              <div className="max-w-[1400px] mx-auto">
-                <ProductCarousel
-                  title="A2 Gir Ghee"
-                  subtitle="Traditional Roots"
-                  products={gheeProducts.map(p => ({
-                    ...p,
-                    quantity: p.vol || '500 ml',
-                    deliveryTime: 'SAME DAY',
-                    originalPrice: p.mrpPrice,
-                    imageUrl: p.imageUrls?.[0],
-                    description: p.description
-                  }))}
-                  cartIds={cart.map(c => c.id)}
-                  onAddToCart={(cp) => {
-                    const originalP = gheeProducts.find(p => String(p.id) === String(cp.id));
-                    if (originalP) addToCart(originalP);
-                  }}
-                  onProductClick={(cp) => router.push(`/product/${cp.id}`)}
-                  onViewAll={() => handleCategoryFilter('ghee')}
-                />
-              </div>
-            )}
-
-            {/* Farm Sweets Carousel Section */}
-            {sweetsProducts.length > 0 && (
-              <div className="max-w-[1400px] mx-auto">
-                <ProductCarousel
-                  title="Farm Sweets"
-                  subtitle="Artisanal Treats"
-                  products={sweetsProducts.map(p => ({
-                    ...p,
-                    quantity: p.vol || '500 g',
-                    deliveryTime: 'SAME DAY',
-                    originalPrice: p.mrpPrice,
-                    imageUrl: p.imageUrls?.[0],
-                    description: p.description
-                  }))}
-                  cartIds={cart.map(c => c.id)}
-                  onAddToCart={(cp) => {
-                    const originalP = sweetsProducts.find(p => String(p.id) === String(cp.id));
-                    if (originalP) addToCart(originalP);
-                  }}
-                  onProductClick={(cp) => router.push(`/product/${cp.id}`)}
-                  onViewAll={() => handleCategoryFilter('sweets')}
-                />
-              </div>
-            )}
-
-            {/* Forest Honey Carousel Section */}
-            {honeyProducts.length > 0 && (
-              <div className="max-w-[1400px] mx-auto">
-                <ProductCarousel
-                  title="Forest Honey"
-                  subtitle="Wild & Raw"
-                  products={honeyProducts.map(p => ({
-                    ...p,
-                    quantity: p.vol || '500 g',
-                    deliveryTime: 'SAME DAY',
-                    originalPrice: p.mrpPrice,
-                    imageUrl: p.imageUrls?.[0],
-                    description: p.description
-                  }))}
-                  cartIds={cart.map(c => c.id)}
-                  onAddToCart={(cp) => {
-                    const originalP = honeyProducts.find(p => String(p.id) === String(cp.id));
-                    if (originalP) addToCart(originalP);
-                  }}
-                  onProductClick={(cp) => router.push(`/product/${cp.id}`)}
-                  onViewAll={() => handleCategoryFilter('honey')}
-                />
-              </div>
-            )}
+          {/* ── 7. Product in Focus: Explore Our A2 Desi Ghee ── */}
+          <div id="focus-ghee">
+            <FocusGheeSection
+              products={products}
+              cartIds={cartIds}
+              onAddToCart={(p, v) => addToCart(p)}
+            />
           </div>
 
-          <NativeSection />
+          {/* ── 8. Only Perfect Makes The Cut (Lab Quality Testing) ── */}
+          <div id="quality-assurance">
+            <QualityAssuranceSection />
+          </div>
+
+          {/* ── 9. Healthy Combo Packs ── */}
+          <div id="healthy-combos">
+            <HealthyCombosSection
+              products={products}
+              cartIds={cartIds}
+              onAddToCart={(p, v) => addToCart(p)}
+            />
+          </div>
+
+          {/* ── 10. Explore Our Superfoods & Staples ── */}
+          <div id="superfoods">
+            <SuperfoodsSection
+              products={products}
+              cartIds={cartIds}
+              onAddToCart={(p, v) => addToCart(p)}
+            />
+          </div>
+
+          {/* ── 11. What Do Our Customers Say (Testimonials) ── */}
+          <CustomerReviewsSection />
+
+          {/* ── 12. Recognized & Certified Purity Badges Strip ── */}
+          <CertificationsStrip />
         </main>
 
+        {/* ── 13. Comprehensive Forest Green Desktop Footer ── */}
         <Footer />
       </div>
 
+      {/* Mobile Sticky Bottom Nav */}
       <BottomNav 
         activeTab={activeTab}
         onTabChange={handleTabChange}
         cartCount={totalQty}
       />
 
+      {/* Slide-out Cart Drawer */}
       <CartSidebar 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}

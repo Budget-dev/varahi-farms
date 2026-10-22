@@ -1,27 +1,31 @@
-import type { Metadata } from 'next';
-import { Oswald } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { WhatsAppButton } from '@/components/vivaan/WhatsAppButton';
-
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-const oswald = Oswald({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+// Local font configuration to avoid network font download timeouts during build
+const oswald = {
   variable: '--font-oswald',
-  display: 'swap',
-});
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#0D3B2E',
+};
 
 export const metadata: Metadata = {
-  title: 'Vivaan Farms',
-  description: 'Pure A2 Gir Cow Bilona Ghee & Organic Goods from Gujarat',
+  title: 'Vivaan Organic Farms | Pure A2 Desi Buffalo Ghee',
+  description: 'Authentic Vedic Bilona A2 Desi Buffalo Ghee, hand-churned in earthen pots and delivered fresh in 14 days.',
   openGraph: {
-    title: 'Vivaan Farms',
-    description: 'Pure A2 Gir Cow Bilona Ghee & Organic Goods from Gujarat',
+    title: 'Vivaan Organic Farms | Pure A2 Desi Buffalo Ghee',
+    description: 'Authentic Vedic Bilona A2 Desi Buffalo Ghee, hand-churned in earthen pots and delivered fresh in 14 days.',
   },
   icons: {
-    icon: 'https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png',
+    icon: '/favicon.ico',
   },
 };
 

@@ -121,16 +121,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
           <p className="text-xs text-muted-foreground font-black tracking-widest uppercase mb-6">{selectedSize} · FARM DIRECT</p>
 
           <div className="flex items-center gap-3 bg-background border border-border rounded-2xl p-4 mb-6">
-            <span className="font-headline text-3xl font-extrabold">{product.rating ?? product.rat ?? 4.9}</span>
-            <div className="h-10 w-px bg-border mx-1"></div>
-            <div>
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating ?? product.rat ?? 5) ? 'text-primary fill-current' : 'text-border'}`} />
-                ))}
+            {product.reviewCount && Number(product.reviewCount) > 0 ? (
+              <>
+                <span className="font-headline text-3xl font-extrabold">{product.rating ?? '5.0'}</span>
+                <div className="h-10 w-px bg-border mx-1"></div>
+                <div>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(Number(product.rating ?? 5)) ? 'text-primary fill-current' : 'text-border'}`} />
+                    ))}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground font-semibold mt-0.5">{product.reviewCount} verified reviews</div>
+                </div>
+              </>
+            ) : (
+              <div>
+                <div className="text-sm font-bold text-foreground">No reviews yet</div>
+                <div className="text-[11px] text-muted-foreground font-medium">Be the first to review this product</div>
               </div>
-              <div className="text-[11px] text-muted-foreground font-semibold mt-0.5">{product.reviewCount ?? product.revs ?? 120} verified reviews</div>
-            </div>
+            )}
           </div>
 
           <div className="bg-secondary/5 border border-secondary/15 rounded-2xl p-4 flex items-center gap-3 mb-6">

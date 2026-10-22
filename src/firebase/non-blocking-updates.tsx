@@ -16,7 +16,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
  * Initiates a setDoc operation for a document reference.
  */
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options: SetOptions = {}) {
-  setDoc(docRef, data, options).catch(error => {
+  setDoc(docRef, data, options).catch((error: any) => {
     console.error("Firestore Set Error:", error);
     errorEmitter.emit(
       'permission-error',
@@ -35,7 +35,7 @@ export function setDocumentNonBlocking(docRef: DocumentReference, data: any, opt
  */
 export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
   const promise = addDoc(colRef, data)
-    .catch(error => {
+    .catch((error: any) => {
       console.error("Firestore Add Error:", error);
       errorEmitter.emit(
         'permission-error',
@@ -55,7 +55,7 @@ export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
  */
 export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) {
   updateDoc(docRef, data)
-    .catch(error => {
+    .catch((error: any) => {
       console.error("Firestore Update Error:", error);
       errorEmitter.emit(
         'permission-error',
@@ -74,7 +74,7 @@ export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) 
  */
 export function deleteDocumentNonBlocking(docRef: DocumentReference) {
   deleteDoc(docRef)
-    .catch(error => {
+    .catch((error: any) => {
       console.error("Firestore Delete Error:", error);
       errorEmitter.emit(
         'permission-error',

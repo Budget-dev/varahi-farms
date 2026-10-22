@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+const motion = {
+  div: React.forwardRef<HTMLDivElement, any>(({ initial, whileInView, viewport, custom, variants, ...props }, ref) => <div ref={ref} {...props} />),
+};
+motion.div.displayName = "MotionDiv";
 
 interface TimelineContentProps {
   as?: string | React.ComponentType<any>;
@@ -25,9 +28,7 @@ export const TimelineContent: React.FC<TimelineContentProps> = ({
   children,
   ...props
 }) => {
-  const Component: any = typeof as === "string" 
-    ? ((motion as any)[as] || motion.div)
-    : (typeof (motion as any).create === "function" ? (motion as any).create(as) : (motion as any)(as));
+  const Component: any = typeof as === "string" ? as : as;
 
   const defaultVariants = {
     hidden: { opacity: 0, y: 20 },

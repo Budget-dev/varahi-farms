@@ -1,6 +1,6 @@
-# Varahi Farms
+# Vivaan Farms
 
-Modern Next.js web application for Varahi Farms.
+Modern Next.js web application for Vivaan Farms.
 
 ## Getting Started
 

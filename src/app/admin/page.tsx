@@ -6,7 +6,6 @@ import { Chart } from 'react-google-charts';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
-import { format, subDays, startOfDay, isSameDay } from 'date-fns';
 
 export default function AdminDashboard() {
   const db = useFirestore();
@@ -39,11 +38,11 @@ export default function AdminDashboard() {
     const today = new Date();
     
     for (let i = 6; i >= 0; i--) {
-      const date = subDays(today, i);
-      const dayLabel = format(date, 'EEE');
+      const date = new Date(today.getTime() - i * 86400000);
+      const dayLabel = date.toLocaleDateString('en-US', { weekday: 'short' });
       const dayTotal = orders
         ? orders
-            .filter(o => o.orderDate && isSameDay(new Date(o.orderDate), date))
+            .filter(o => o.orderDate && new Date(o.orderDate).toDateString() === date.toDateString())
             .reduce((acc, curr) => acc + (curr.totalAmount || 0), 0)
         : 0;
       data.push([dayLabel, dayTotal]);

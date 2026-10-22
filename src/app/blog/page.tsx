@@ -86,7 +86,7 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
+    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-28 md:pb-0">
       <div className="sticky top-0 z-[900]">
         <Ticker />
         <Header 
@@ -97,15 +97,15 @@ export default function BlogPage() {
         />
       </div>
 
-      <main className="py-12 md:py-20">
-        <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-          <div className="text-center mb-16 space-y-4">
+      <main className="py-6 sm:py-12 md:py-20">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-5 md:px-10">
+          <div className="text-center mb-8 sm:mb-16 space-y-2 sm:space-y-4">
             <span className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">Vivaan Journal</span>
-            <h1 className="font-headline text-5xl md:text-7xl font-extrabold">Wellness & Wisdom</h1>
-            <p className="text-[#7A6848] max-w-2xl mx-auto text-lg">Insights from our farm, traditional recipes, and scientific guides to healthy living.</p>
+            <h1 className="font-headline text-3xl sm:text-5xl md:text-7xl font-extrabold">Wellness & Wisdom</h1>
+            <p className="text-[#7A6848] max-w-2xl mx-auto text-sm sm:text-lg">Insights from our farm, traditional recipes, and scientific guides to healthy living.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
             {BLOG_POSTS.map((post) => (
               <article key={post.id} className="group cursor-pointer">
                 <div className="relative aspect-[16/10] rounded-[24px] overflow-hidden mb-6 shadow-lg">

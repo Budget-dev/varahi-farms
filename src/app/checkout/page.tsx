@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-headline text-sm sm:text-base font-bold text-gray-900 truncate">{item.name}</h3>
+                      <h3 className="font-headline text-sm sm:text-base font-bold text-gray-900 truncate capitalize">{item.name}</h3>
                       <p className="text-[10px] text-[#7A6848] font-bold uppercase tracking-wider">{item.vol} · {item.rewardCoins || 0} Coins</p>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs font-bold text-gray-500">Qty: {item.qty}</span>

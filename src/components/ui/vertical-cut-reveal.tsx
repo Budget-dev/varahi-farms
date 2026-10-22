@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+const motion = {
+  span: ({ children, className }: any) => <span className={className}>{children}</span>,
+};
 
 interface VerticalCutRevealProps {
   children: string;
