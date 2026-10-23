@@ -102,34 +102,34 @@ export const CleanestPantrySection: React.FC<CleanestPantrySectionProps> = ({
     <section id="cleanest-pantry" className="py-6 sm:py-10 md:py-16 bg-[#FFFFFF] border-b border-[#EAE3D2] relative select-none">
       <div className="max-w-[1440px] mx-auto px-3 sm:px-8 lg:px-12">
         
-        {/* Section Heading with See All button */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3 sm:mb-6 md:mb-8">
-          <div className="text-center sm:text-left">
-            <p className="text-[10px] sm:text-sm font-black text-[#6B5A45] tracking-[2px] sm:tracking-[2.5px] uppercase mb-0.5 sm:mb-1">
-              Welcome to Vivaan
-            </p>
-            <h2 className="font-serif text-xl sm:text-3xl md:text-4xl font-extrabold text-[#0D3B2E] tracking-tight">
-              Your One-Stop Cleanest Pantry
-            </h2>
-            <div className="w-12 sm:w-16 h-0.5 bg-[#0D3B2E]/20 mt-1.5 rounded-full mx-auto sm:mx-0" />
-          </div>
+        {/* Section Heading with Centered See All button matching reference screenshot */}
+        <div className="text-center mb-3 sm:mb-6 md:mb-7">
+          <p className="text-[10px] sm:text-xs md:text-sm font-serif font-black text-[#6B5A45] tracking-[2.5px] uppercase mb-1">
+            WELCOME TO VIVAAN
+          </p>
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0D3B2E] tracking-tight">
+            Your One-Stop Cleanest Pantry
+          </h2>
+          <div className="w-12 sm:w-16 h-0.5 bg-[#0D3B2E]/25 mx-auto my-2 rounded-full" />
 
-          {/* See All Button linking to Category Page */}
-          <button
-            type="button"
-            onClick={() => router.push(`/category/${selectedCat}`)}
-            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full border border-[#0D3B2E] text-[#0D3B2E] bg-white hover:bg-[#0D3B2E] hover:text-white transition-all text-xs sm:text-sm font-bold tracking-wide shadow-xs cursor-pointer group shrink-0 active:scale-95"
-            aria-label={`See all products in ${selectedCat}`}
-          >
-            <span>See All</span>
-            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          {/* Centered See All Pill Button */}
+          <div className="mt-2.5 sm:mt-3">
+            <button
+              type="button"
+              onClick={() => router.push(`/category/${selectedCat === 'all' ? 'all' : selectedCat}`)}
+              className="inline-flex items-center gap-2 px-5 py-1.5 sm:py-2 rounded-full border border-[#0D3B2E] text-[#0D3B2E] bg-white hover:bg-[#0D3B2E] hover:text-white transition-all text-xs sm:text-sm font-serif font-bold tracking-wide shadow-xs cursor-pointer active:scale-95 group"
+              aria-label="See all products in cleanest pantry"
+            >
+              <span>See All</span>
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </div>
 
         {/* Authentic Circular Category Icons Row matching screenshot */}
         <PantryCategoryIcons
           selectedId={selectedCat}
-          onSelect={(id) => setSelectedCat(id)}
+          onSelect={(id) => setSelectedCat(prev => prev === id ? 'all' : id)}
         />
 
         {/* Carousel Container with Controls */}

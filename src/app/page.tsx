@@ -202,14 +202,10 @@ export default function VivaanFarms() {
         } as Product;
       });
 
-    // Merge if fewer items
-    if (mapped.length < 6) {
-      const existingIds = new Set(mapped.map(m => m.id));
-      const fallbacksToAdd = DEFAULT_CATALOG.filter(d => !existingIds.has(d.id));
-      return [...mapped, ...fallbacksToAdd];
-    }
-
-    return mapped;
+    // Always ensure full catalog categories (such as sweets, ghee, honey) are available
+    const existingIds = new Set(mapped.map(m => m.id));
+    const fallbacksToAdd = DEFAULT_CATALOG.filter(d => !existingIds.has(d.id));
+    return [...mapped, ...fallbacksToAdd];
   }, [dbProducts]);
 
   const handleSearch = async (queryStr: string) => {
