@@ -278,32 +278,16 @@ export default function CategoryDetailPage({ params }: PageProps) {
                       <div
                         key={p.id}
                         onClick={() => router.push(`/product/${p.id}`)}
-                        className="bg-white rounded-xl sm:rounded-2xl border border-[#EBE5DA] hover:border-[#0D3B2E]/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer group"
+                        className="bg-white rounded-2xl border border-gray-200 hover:border-[#0D3B2E]/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-visible cursor-pointer group relative"
                       >
                         {/* Top Image Section */}
-                        <div className="relative h-[120px] sm:h-[180px] md:h-[210px] w-full bg-[#FAF8F5] p-2 sm:p-4 flex items-center justify-center border-b border-[#F2ECE1] overflow-hidden">
-                          {/* Discount / Bestseller Badge */}
-                          <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 flex flex-col gap-1 items-start">
-                            {discount > 0 ? (
-                              <span className="bg-[#B91C1C] text-white text-[8px] sm:text-[9.5px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider shadow-xs">
-                                {discount}% OFF
-                              </span>
-                            ) : (
-                              <span className="bg-[#0D3B2E] text-white text-[8px] sm:text-[9.5px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider shadow-xs">
-                                BESTSELLER
-                              </span>
-                            )}
+                        <div className="relative h-[175px] sm:h-[220px] md:h-[250px] w-full bg-[#FAF8F5] p-2.5 sm:p-4 flex items-center justify-center border-b border-[#F2ECE1] rounded-t-2xl">
+                          {/* Hanging FLAT 30% OFF Maroon Badge */}
+                          <div className="absolute top-0 left-2.5 z-10 bg-[#8B264E] text-white rounded-b-xl px-2 pt-1 pb-1.5 text-center shadow-xs flex flex-col items-center justify-center leading-none select-none pointer-events-none">
+                            <span className="text-[7px] sm:text-[7.5px] font-black uppercase tracking-wider">FLAT</span>
+                            <span className="text-[11px] sm:text-xs font-black tracking-tight my-0.5">{discount > 0 ? discount : 30}%</span>
+                            <span className="text-[7px] sm:text-[7.5px] font-black uppercase tracking-wider">OFF</span>
                           </div>
-
-                          {/* Wishlist Button */}
-                          <button
-                            type="button"
-                            onClick={(e) => toggleWishlist(p.id, e)}
-                            className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/80 backdrop-blur-xs border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
-                            aria-label="Wishlist"
-                          >
-                            <Heart className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isWishlisted && "fill-red-500 text-red-500")} />
-                          </button>
 
                           {/* Product Image */}
                           <div className="relative w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
@@ -311,93 +295,58 @@ export default function CategoryDetailPage({ params }: PageProps) {
                               src={(p.imageUrls && p.imageUrls[0]) || '/images/products/ghee_tin.jpg'}
                               alt={p.name}
                               fill
-                              className="object-contain p-1.5 sm:p-3"
+                              className="object-contain p-2 sm:p-3"
                               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
                             />
                           </div>
+
+                          {/* Floating ADD Button positioned right on the seam */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleAdd(p, e)}
+                            className={cn(
+                              "absolute right-2.5 -bottom-3.5 sm:right-3 sm:-bottom-4 z-20 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all duration-200 cursor-pointer shadow-md active:scale-95",
+                              isAdded || inCart
+                                ? "bg-emerald-700 text-white"
+                                : "bg-[#1B4D3E] text-white hover:bg-[#0D3B2E]"
+                            )}
+                            aria-label={`Add ${p.name} to cart`}
+                          >
+                            <span>{isAdded ? 'ADDED' : inCart ? 'IN CART' : 'ADD'}</span>
+                            {isAdded ? (
+                              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            ) : (
+                              <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            )}
+                          </button>
                         </div>
 
                         {/* Card Body */}
-                        <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between gap-1.5 sm:gap-2">
+                        <div className="p-3 pt-4 sm:p-4 sm:pt-5 flex flex-col flex-1 justify-between gap-1.5 sm:gap-2">
                           <div className="space-y-1">
-                            {/* Purity / Process Tag */}
-                            <span className="inline-block text-[8px] sm:text-[9.5px] font-black text-emerald-800 bg-[#E8F5EE] px-2 py-0.5 rounded-md tracking-wider uppercase truncate max-w-full">
-                              {p.statusBadge || 'Vedic Bilona · 100% Pure'}
-                            </span>
-
-                            {/* Product Name */}
-                            <h3 className="font-serif text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#0D3B2E] transition-colors line-clamp-2 min-h-[2.4em] leading-tight sm:leading-snug">
+                            <h3 className="font-serif text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#0D3B2E] transition-colors line-clamp-2 min-h-[2.6em] leading-snug">
                               {p.name}
                             </h3>
 
                             {/* Rating */}
-                            <div className="flex items-center gap-1 text-[10px] sm:text-xs">
-                              <div className="flex items-center text-amber-500">
-                                <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-                                <span className="font-black text-gray-900 ml-1 text-[10px] sm:text-xs">{p.rating || 4.9}</span>
-                              </div>
-                              <span className="text-gray-400 text-[9px] sm:text-[11px]">({p.reviewCount || 120})</span>
+                            <div className="flex items-center gap-1 text-[11px] sm:text-xs">
+                              <Star className="w-3.5 h-3.5 fill-[#F5A623] text-[#F5A623] shrink-0" />
+                              <span className="font-black text-gray-900">{p.rating || 4.8}</span>
+                              <span className="text-gray-500 text-[10px] sm:text-[11px]">({p.reviewCount || 1323} reviews)</span>
                             </div>
                           </div>
 
-                          {/* Variant Pills */}
-                          {Array.isArray(p.vars) && p.vars.length > 1 && (
-                            <div className="flex items-center gap-1 sm:gap-1.5 pt-1 overflow-x-auto no-scrollbar">
-                              {p.vars.map((v, idx) => (
-                                <button
-                                  key={idx}
-                                  type="button"
-                                  onClick={(e) => handleVariantSelect(p.id, idx, e)}
-                                  className={cn(
-                                    "text-[8.5px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border transition-all cursor-pointer whitespace-nowrap",
-                                    varIdx === idx
-                                      ? "bg-[#0D3B2E] text-white border-[#0D3B2E]"
-                                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
-                                  )}
-                                >
-                                  {v.s}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Price & Add to Cart Button */}
-                          <div className="pt-2 border-t border-[#F2ECE1] flex items-center justify-between gap-1 mt-auto">
-                            <div className="min-w-0">
-                              <div className="text-xs sm:text-base font-black text-[#0D3B2E] leading-none">
-                                ₹{displayPrice.toLocaleString('en-IN')}
-                              </div>
-                              {displayMrp > displayPrice && (
-                                <div className="text-[9.5px] sm:text-xs text-gray-400 line-through truncate">
-                                  ₹{displayMrp.toLocaleString('en-IN')}
-                                </div>
-                              )}
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={(e) => handleAdd(p, e)}
-                              className={cn(
-                                "px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-[9.5px] sm:text-xs uppercase tracking-wider flex items-center gap-1 transition-all duration-200 cursor-pointer shadow-xs active:scale-95 shrink-0",
-                                isAdded || inCart
-                                  ? "bg-emerald-700 text-white"
-                                  : "bg-[#0D3B2E] text-white hover:bg-[#14472D]"
-                              )}
-                            >
-                              {isAdded ? (
-                                <>
-                                  <span className="hidden xs:inline">ADDED</span>
-                                  <Check className="w-3.5 h-3.5" />
-                                </>
-                              ) : (
-                                <>
-                                  <span>ADD</span>
-                                  <ShoppingCart className="w-3.5 h-3.5" />
-                                </>
-                              )}
-                            </button>
+                          {/* Price Row (NO PURPLE BOX) */}
+                          <div className="pt-1.5 sm:pt-2 flex items-baseline gap-1.5 mt-auto">
+                            <span className="text-sm sm:text-base font-black text-gray-900 leading-none">
+                              ₹{displayPrice.toLocaleString('en-IN')}
+                            </span>
+                            {displayMrp > displayPrice && (
+                              <span className="text-[10px] sm:text-xs text-gray-400 line-through font-semibold">
+                                ₹{displayMrp.toLocaleString('en-IN')}
+                              </span>
+                            )}
                           </div>
-
                         </div>
                       </div>
                     );

@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Star, ShoppingCart, Check, Tag, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { Star, ShoppingCart, Check, Tag, Heart, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -107,6 +107,8 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
 }) => {
   const router = useRouter();
   const [justAddedMap, setJustAddedMap] = useState<Record<string, boolean>>({});
+  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
+  const [scrollProgress, setScrollProgress] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const comboProducts = React.useMemo(() => {
@@ -115,9 +117,24 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
     return [...fromProps, ...DEFAULT_COMBOS.slice(fromProps.length)];
   }, [products]);
 
+  const toggleWishlist = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setWishlist(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const maxScroll = scrollWidth - clientWidth;
+      if (maxScroll > 0) {
+        setScrollProgress(Math.min(1, Math.max(0, scrollLeft / maxScroll)));
+      }
+    }
+  };
+
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const offset = direction === 'left' ? -260 : 260;
+      const offset = direction === 'left' ? -280 : 280;
       scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
     }
   };
@@ -173,7 +190,7 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
           <button
             type="button"
             onClick={() => scroll('left')}
-            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-[#0D3B2E] hover:bg-[#0D3B2E] hover:text-white transition-all cursor-pointer opacity-90 hover:opacity-100"
+            className="hidden sm:flex absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center text-[#0D3B2E] hover:bg-[#0D3B2E] hover:text-white transition-all cursor-pointer opacity-90 hover:opacity-100"
             aria-label="Previous combos"
           >
             <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -183,7 +200,7 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
           <button
             type="button"
             onClick={() => scroll('right')}
-            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-[#0D3B2E] hover:bg-[#0D3B2E] hover:text-white transition-all cursor-pointer opacity-90 hover:opacity-100"
+            className="hidden sm:flex absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 items-center justify-center text-[#0D3B2E] hover:bg-[#0D3B2E] hover:text-white transition-all cursor-pointer opacity-90 hover:opacity-100"
             aria-label="Next combos"
           >
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -192,12 +209,13 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
           {/* Horizontal Swipeable Cards Row */}
           <div
             ref={scrollRef}
-            className="flex items-stretch gap-2.5 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-3 px-1"
+            onScroll={handleScroll}
+            className="flex items-stretch gap-2.5 sm:gap-5 overflow-x-auto no-scrollbar scroll-smooth pb-5 pt-1 px-1"
           >
             {comboProducts.map((p) => {
               const displayPrice = Number(p.price) || 0;
               const displayMrp = Number(p.mrpPrice) || displayPrice;
-              const savings = displayMrp - displayPrice;
+              const discount = displayMrp > displayPrice ? Math.round(((displayMrp - displayPrice) / displayMrp) * 100) : 0;
               const isAdded = !!justAddedMap[p.id];
               const inCart = cartIds.includes(p.id);
 
@@ -205,79 +223,72 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
                 <div
                   key={p.id}
                   onClick={() => router.push(`/product/${p.id}`)}
-                  className="w-[140px] sm:w-[240px] md:w-[260px] shrink-0 bg-white rounded-xl sm:rounded-2xl border border-[#EBE5DA] hover:border-[#0D3B2E]/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer group"
+                  className="w-[155px] sm:w-[240px] md:w-[260px] shrink-0 bg-white rounded-2xl border border-gray-200 hover:border-[#0D3B2E]/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-visible cursor-pointer group relative"
                 >
                   {/* Image Section */}
-                  <div className="relative h-[110px] sm:h-[180px] md:h-[200px] w-full bg-[#FAF8F5] p-2 sm:p-4 flex items-center justify-center border-b border-[#F2ECE1] overflow-hidden">
-                    {savings > 0 && (
-                      <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 bg-[#B91C1C] text-white text-[8px] sm:text-[9px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-md tracking-wider flex items-center gap-1 shadow-xs">
-                        <Tag className="w-2.5 h-2.5" />
-                        <span>SAVE ₹{savings.toLocaleString('en-IN')}</span>
-                      </div>
-                    )}
+                  <div className="relative h-[175px] sm:h-[220px] md:h-[250px] w-full bg-[#FAF8F5] p-2.5 sm:p-4 flex items-center justify-center border-b border-[#F2ECE1] rounded-t-2xl">
+                    {/* Hanging FLAT 30% OFF Maroon Badge */}
+                    <div className="absolute top-0 left-2.5 z-10 bg-[#8B264E] text-white rounded-b-xl px-2 pt-1 pb-1.5 text-center shadow-xs flex flex-col items-center justify-center leading-none select-none pointer-events-none">
+                      <span className="text-[7px] sm:text-[7.5px] font-black uppercase tracking-wider">FLAT</span>
+                      <span className="text-[11px] sm:text-xs font-black tracking-tight my-0.5">{discount > 0 ? discount : 30}%</span>
+                      <span className="text-[7px] sm:text-[7.5px] font-black uppercase tracking-wider">OFF</span>
+                    </div>
 
+                    {/* Product Image */}
                     <div className="relative w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                       <Image
                         src={(p.imageUrls && p.imageUrls[0]) || '/images/products/combo_pack.jpg'}
                         alt={p.name}
                         fill
-                        className="object-contain p-1 sm:p-2"
-                        sizes="(max-width: 640px) 150px, 280px"
+                        className="object-contain p-2 sm:p-3"
+                        sizes="(max-width: 640px) 180px, 280px"
                       />
                     </div>
+
+                    {/* Floating ADD Button positioned right on the seam */}
+                    <button
+                      type="button"
+                      onClick={(e) => handleAdd(p, e)}
+                      className={cn(
+                        "absolute right-2.5 -bottom-3.5 sm:right-3 sm:-bottom-4 z-20 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all duration-200 cursor-pointer shadow-md active:scale-95",
+                        isAdded || inCart
+                          ? "bg-emerald-700 text-white"
+                          : "bg-[#1B4D3E] text-white hover:bg-[#0D3B2E]"
+                      )}
+                      aria-label={`Add ${p.name} to cart`}
+                    >
+                      <span>{isAdded ? 'ADDED' : inCart ? 'IN CART' : 'ADD'}</span>
+                      {isAdded ? (
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      ) : (
+                        <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      )}
+                    </button>
                   </div>
 
                   {/* Body Section */}
-                  <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between gap-1.5 sm:gap-2">
+                  <div className="p-3 pt-4 sm:p-4 sm:pt-5 flex flex-col flex-1 justify-between gap-1.5 sm:gap-2">
                     <div className="space-y-1">
-                      <span className="inline-block text-[8px] sm:text-[9px] font-black text-amber-800 bg-[#FEF7E6] px-1.5 sm:px-2 py-0.5 rounded-md tracking-wider uppercase border border-amber-300/40 truncate max-w-full">
-                        {p.vol || 'Curated Value Bundle'}
-                      </span>
-                      <h3 className="font-serif text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#0D3B2E] transition-colors line-clamp-2 min-h-[2.4em] leading-tight sm:leading-snug">
+                      <h3 className="font-serif text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#0D3B2E] transition-colors line-clamp-2 min-h-[2.6em] leading-snug">
                         {p.name}
                       </h3>
-                      <div className="flex items-center gap-1 text-[10px] sm:text-xs">
-                        <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-500 text-amber-500" />
+                      <div className="flex items-center gap-1 text-[11px] sm:text-xs">
+                        <Star className="w-3.5 h-3.5 fill-[#F5A623] text-[#F5A623] shrink-0" />
                         <span className="font-black text-gray-900">{p.rating || 4.9}</span>
-                        <span className="text-gray-400 text-[9px] sm:text-[11px]">({p.reviewCount || 190})</span>
+                        <span className="text-gray-500 text-[10px] sm:text-[11px]">({p.reviewCount || 1323} reviews)</span>
                       </div>
                     </div>
 
-                    {/* Price & Add to Cart */}
-                    <div className="pt-1.5 sm:pt-2 border-t border-[#F2ECE1] flex items-center justify-between gap-1 mt-auto">
-                      <div>
-                        <div className="text-xs sm:text-base font-black text-[#0D3B2E]">
-                          ₹{displayPrice.toLocaleString('en-IN')}
-                        </div>
-                        {displayMrp > displayPrice && (
-                          <div className="text-[10px] sm:text-xs text-gray-400 line-through">
-                            ₹{displayMrp.toLocaleString('en-IN')}
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleAdd(p, e)}
-                        className={cn(
-                          "px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider flex items-center gap-1 transition-all duration-200 cursor-pointer shadow-xs active:scale-95",
-                          isAdded || inCart
-                            ? "bg-emerald-700 text-white"
-                            : "bg-[#0D3B2E] text-white hover:bg-[#14472D]"
-                        )}
-                      >
-                        {isAdded ? (
-                          <>
-                            <span className="hidden xs:inline">ADDED</span>
-                            <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </>
-                        ) : (
-                          <>
-                            <span>ADD</span>
-                            <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </>
-                        )}
-                      </button>
+                    {/* Price Row (NO PURPLE BOX) */}
+                    <div className="pt-1.5 sm:pt-2 flex items-baseline gap-1.5 mt-auto">
+                      <span className="text-sm sm:text-base font-black text-gray-900 leading-none">
+                        ₹{displayPrice.toLocaleString('en-IN')}
+                      </span>
+                      {displayMrp > displayPrice && (
+                        <span className="text-[10px] sm:text-xs text-gray-400 line-through font-semibold">
+                          ₹{displayMrp.toLocaleString('en-IN')}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -287,15 +298,28 @@ export const HealthyCombosSection: React.FC<HealthyCombosSectionProps> = ({
           </div>
         </div>
 
-        {/* Explore All Combos Link */}
-        <div className="mt-6 sm:mt-8 flex justify-center">
+        {/* Scroll Progress Bar & See All Button matching reference screenshot */}
+        <div className="flex items-center justify-between mt-3 sm:mt-5 px-1 sm:px-2">
+          {/* Scroll Progress Indicator */}
+          <div className="w-24 sm:w-36 h-1.5 bg-gray-200 rounded-full overflow-hidden relative">
+            <div
+              className="h-full bg-gray-800 rounded-full transition-all duration-150"
+              style={{
+                width: '35%',
+                transform: `translateX(${scrollProgress * 185}%)`
+              }}
+            />
+          </div>
+
+          {/* See All Button */}
           <button
             type="button"
             onClick={() => router.push('/category/combos')}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#0D3B2E] text-[#0D3B2E] bg-white hover:bg-[#0D3B2E] hover:text-white transition-all text-xs sm:text-sm font-bold tracking-wide shadow-xs active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition-all text-xs font-bold shadow-xs cursor-pointer active:scale-95"
+            aria-label="See all combo packs"
           >
-            <span>Explore All Healthy Combos</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>See All</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
