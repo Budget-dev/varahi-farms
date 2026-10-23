@@ -48,15 +48,14 @@ export const HoverFooter: React.FC = () => {
           {/* Brand section */}
           <div className="flex flex-col space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 relative brightness-0 invert">
+              <div className="w-44 h-14 relative brightness-0 invert">
                 <Image 
-                  src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
-                  alt="Vivaan Logo"
+                  src="https://vivanfa.sirv.com/Group%2066%20(2).png"
+                  alt="Vivaan Farms Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain object-left"
                 />
               </div>
-              <span className="text-3xl font-headline font-extrabold tracking-tight">Vivaan</span>
             </div>
             <p className="text-sm text-white/60 leading-relaxed font-medium">
               Authentic farm-direct purity from the heart of Gujarat. Traditional Bilona method A2 Ghee and handcrafted goods.

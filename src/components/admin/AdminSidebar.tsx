@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -32,15 +33,17 @@ export const AdminSidebar: React.FC = () => {
 
   return (
     <aside className="w-[280px] bg-[#0F0F11] text-white flex flex-col h-screen sticky top-0 overflow-y-auto shrink-0 border-r border-white/5 font-body">
-      <div className="p-8 pb-4">
-        <Link href="/admin" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-            <i className="fa-solid fa-leaf text-xl text-white"></i>
+      <div className="p-6 pb-4">
+        <Link href="/admin" className="flex flex-col gap-2 group">
+          <div className="w-36 h-10 relative brightness-0 invert">
+            <Image
+              src="https://vivanfa.sirv.com/Group%2066%20(2).png"
+              alt="Vivaan Farms Logo"
+              fill
+              className="object-contain object-left transition-transform group-hover:scale-105"
+            />
           </div>
-          <div>
-            <span className="text-xl font-headline font-extrabold tracking-tight block">VIVAAN</span>
-            <span className="text-[10px] font-black text-white/30 uppercase tracking-[3px]">Admin Panel</span>
-          </div>
+          <span className="text-[9px] font-black text-white/40 uppercase tracking-[3px] pl-0.5">Admin Panel</span>
         </Link>
       </div>
 

@@ -24,10 +24,10 @@ export const SplashScreen: React.FC = () => {
           initial={{ opacity: 0, y: 30, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="w-32 h-32 md:w-48 md:h-48 relative mb-10 brightness-0 invert"
+          className="w-64 h-24 sm:w-80 sm:h-28 md:w-96 md:h-36 relative mb-6 brightness-0 invert"
         >
           <Image 
-            src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
+            src="https://vivanfa.sirv.com/Group%2066%20(2).png"
             alt="Vivaan Farms Logo"
             fill
             className="object-contain"
@@ -40,15 +40,8 @@ export const SplashScreen: React.FC = () => {
           />
         </motion.div>
 
-        {/* Brand Name */}
-        <motion.h1
-          initial={{ opacity: 0, letterSpacing: "12px" }}
-          animate={{ opacity: 1, letterSpacing: "6px" }}
-          transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
-          className="font-headline text-4xl md:text-7xl font-extrabold text-white mb-6 uppercase tracking-widest"
-        >
-          VIVAAN FARMS
-        </motion.h1>
+        {/* Brand Name (Accessible for SEO/A11y) */}
+        <h1 className="sr-only">VIVAAN FARMS</h1>
 
         {/* Tagline */}
         <motion.div

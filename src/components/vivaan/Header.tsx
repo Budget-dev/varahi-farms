@@ -95,23 +95,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
 
         <div className="flex-1 flex justify-center md:justify-start h-full items-center">
-          <Link href="/" className="flex items-center shrink-0 group relative gap-2.5">
+          <Link href="/" className="flex items-center shrink-0 group relative py-1" aria-label="Vivaan Farms Home">
             {/* Brand Logo */}
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0D3B2E] flex items-center justify-center text-white font-serif font-black shadow-xs shrink-0">
-                <svg viewBox="0 0 40 40" className="w-6 h-6 text-[#8CD790]" fill="currentColor">
-                  <path d="M20 5 C28 5 35 12 35 20 C35 28 28 35 20 35 C12 35 5 28 5 20 C5 12 12 5 20 5 Z M20 9 C14 9 9 14 9 20 C9 26 14 31 20 31 C26 31 31 26 31 20 C31 14 26 9 20 9 Z" fill="#F8D279" />
-                  <path d="M20 12 C23 15 25 18 24 22 C23 26 19 28 16 26 C13 24 13 20 16 17 C18 15 19 13 20 12 Z" fill="#0D3B2E" />
-                </svg>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif font-black text-lg sm:text-xl text-[#0D3B2E] tracking-tight leading-none">
-                  VIVAAN
-                </span>
-                <span className="text-[7.5px] sm:text-[9px] font-black text-[#6B5A45] tracking-[2.5px] uppercase mt-0.5">
-                  ORGANIC FARMS
-                </span>
-              </div>
+            <div className="relative h-9 sm:h-11 md:h-13 w-[120px] sm:w-[145px] md:w-[170px] flex items-center">
+              <Image
+                src="https://vivanfa.sirv.com/Group%2066%20(2).png"
+                alt="Vivaan Farms"
+                fill
+                priority
+                sizes="(max-width: 640px) 120px, (max-width: 768px) 145px, 170px"
+                className="object-contain object-left transition-transform duration-200 group-hover:scale-[1.03]"
+              />
             </div>
           </Link>
         </div>
@@ -295,10 +289,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               <div className="absolute top-[-30px] right-[-30px] w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="flex items-center gap-3 mb-4 relative z-10">
                 {/* Mobile Menu Brand Signature */}
-                <div className="w-36 h-10 relative brightness-0 invert">
+                <div className="w-40 h-12 relative brightness-0 invert">
                    <Image 
-                    src="/mobile-logo.png"
-                    alt="vivaan farms"
+                    src="https://vivanfa.sirv.com/Group%2066%20(2).png"
+                    alt="Vivaan Farms"
                     fill
                     className="object-contain object-left"
                   />
